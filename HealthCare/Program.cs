@@ -1,4 +1,7 @@
 using HealthCare.Context;
+using HealthCare.Models.Employee;
+using HealthCare.Models.Role;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +14,11 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+//EF
+builder.Services.AddIdentity<Employee, Role>()
+    .AddEntityFrameworkStores<HeathCareContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddScoped<HeathCareContext>();
 
 // Connection whit DB
@@ -22,6 +30,8 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<HeathCareContext>( opti
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

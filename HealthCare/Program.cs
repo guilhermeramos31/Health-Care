@@ -21,7 +21,20 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<HeathCareContext>( opti
 builder.Services.AddScoped<HeathCareContext>();
 
 //EF
-builder.Services.AddIdentity<Employee, EntityRole>()
+builder.Services.AddIdentity<Employee, EntityRole>( employee => 
+{
+    employee.Password.RequireDigit = true;
+    employee.Password.RequireLowercase = true;
+    employee.Password.RequireNonAlphanumeric = true;
+    employee.Password.RequireUppercase = true;
+    employee.Password.RequiredLength = 6;
+    employee.User.RequireUniqueEmail = true;
+}
+)
+    .AddRoleManager<RoleManager<EntityRole>>()
+    .AddSignInManager<SignInManager<Employee>>()
+    .AddUserManager<UserManager<Employee>>()
+    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Employee, EntityRole>>()
     .AddEntityFrameworkStores<HeathCareContext>()
     .AddDefaultTokenProviders();
 

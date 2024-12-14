@@ -1,6 +1,6 @@
-﻿namespace HealthCare.Configurations;
+﻿namespace HealthCare.Configurations.Jwt;
 
-public class JwtSettings
+public class JwtBody
 {
     public string SecretKey { get; set; } = string.Empty;
     public string Issuer { get; set; } = string.Empty;

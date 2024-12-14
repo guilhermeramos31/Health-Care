@@ -1,20 +1,29 @@
-using HealthCare.Configurations;
 using HealthCare.Context;
-using HealthCare.Models.EntityEmployee;
-using HealthCare.Models.Role;
 using HealthCare.Services;
 using HealthCare.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using HealthCare.Models.Profiles;
+using HealthCare.Models.EntityEmployee;
+using HealthCare.Models.EntityRole;
+using HealthCare.Repositories;
+using HealthCare.Configurations.Jwt;
+using HealthCare.Repositories.Interfaces;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder( args );
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 
+//Mappers
+builder.Services.AddAutoMapper( typeof( EmployeeProfile ) );
+
+//ID
+builder.Services.AddScoped<HeathCareContext>();
+builder.Services.AddScoped<IRepositoryUow, RepositoryUow>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITokenService, TokenServices>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
@@ -22,13 +31,12 @@ builder.Services.AddSwaggerGen();
 
 
 // Connection whit DB
-var postgreURL = "DB_URL";
-var connection = builder.Configuration.GetConnectionString( postgreURL );
-builder.Services.AddEntityFrameworkNpgsql().AddDbContext<HeathCareContext>( option => option.UseNpgsql( connection ) );
-builder.Services.AddScoped<HeathCareContext>();
+var postgreUrl = "DB_URL";
+builder.Services.AddDbContext<HeathCareContext>( options =>
+    options.UseNpgsql( builder.Configuration.GetConnectionString( postgreUrl ) ) );
 
 //EF
-builder.Services.AddIdentity<Employee, EntityRole>( employee => 
+builder.Services.AddIdentity<Employee, Role>( employee =>
 {
     employee.Password.RequireDigit = true;
     employee.Password.RequireLowercase = true;
@@ -38,34 +46,15 @@ builder.Services.AddIdentity<Employee, EntityRole>( employee =>
     employee.User.RequireUniqueEmail = true;
 }
 )
-    .AddRoleManager<RoleManager<EntityRole>>()
+    .AddRoleManager<RoleManager<Role>>()
     .AddSignInManager<SignInManager<Employee>>()
     .AddUserManager<UserManager<Employee>>()
-    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Employee, EntityRole>>()
+    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Employee, Role>>()
     .AddEntityFrameworkStores<HeathCareContext>()
     .AddDefaultTokenProviders();
 
 //Authentication
-var jwtSettings = builder.Configuration.GetSection( "JwtSettings" ).Get<JwtSettings>()
-                 ?? throw new InvalidOperationException( "JWT settings are not configured." );
-
-builder.Services.AddAuthentication( options =>
-{
-    options.DefaultScheme = IdentityConstants.ApplicationScheme;
-    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-} ).AddJwtBearer( options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration[ jwtSettings.Issuer ],
-        ValidAudience = builder.Configuration[ jwtSettings.Audience ],
-        IssuerSigningKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtSettings.SecretKey ) )
-    };
-} );
+builder.AddAuthenticationJwt();
 
 var app = builder.Build();
 

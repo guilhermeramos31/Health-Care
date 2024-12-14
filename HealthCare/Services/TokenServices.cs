@@ -1,45 +1,46 @@
-﻿using HealthCare.Configurations;
-using HealthCare.Models.EntityEmployee;
+﻿using System.Globalization;
+using AutoMapper;
+using HealthCare.Models.EntityEmployee.DTO;
 using HealthCare.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using HealthCare.Models.EntityEmployee;
+using HealthCare.Configurations.Jwt;
 
 namespace HealthCare.Services;
 
-public class TokenServices : ITokenService
+public class TokenServices( IConfiguration configuration, IMapper mapper ) : ITokenService
 {
-    private readonly IConfiguration _configuration;
-    public TokenServices( IConfiguration configuration )
-    {
-        _configuration = configuration;
-    }
+    private readonly IConfiguration _configuration = configuration;
+    private readonly IMapper _mapper = mapper;
 
-    public string GenerateAccessToken( Employee employee )
+    public string GenerateAccessToken( EmployeeRequestDTO requestDto )
     {
-        var jwtSettings = _configuration.GetSection( "JwtSettings" ).Get<JwtSettings>()
+        var employee = _mapper.Map<Employee>( requestDto );
+        var jwt = _configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
                     ?? throw new InvalidOperationException( "JWT settings are not configured." );
 
         var rolesNames = new List<string>();
-        foreach (var role in employee.RoleId)
+        foreach (var role in employee.Role)
         {
-            rolesNames.Add( role.Name ?? throw new ArgumentNullException( nameof( employee )));
+            rolesNames.Add( role.ToString() ?? throw new ArgumentNullException( nameof( role ) ) );
         }
 
-        var issuer = jwtSettings.Issuer;
-        var audience = jwtSettings.Audience;
-        var secretKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtSettings.SecretKey ));
+        var issuer = jwt.Issuer;
+        var audience = jwt.Audience;
+        var secretKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwt.SecretKey ) );
         var credentials = new SigningCredentials( secretKey, SecurityAlgorithms.HmacSha256 );
 
         var claims = new List<Claim>
         {
             new (JwtRegisteredClaimNames.Sub, employee.Id.ToString()),
-            new (JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-            new ("role",  JsonSerializer.Serialize( rolesNames )),
+            new (JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+            new ("role",  JsonSerializer.Serialize(rolesNames)),
         };
-        
+
         var token = new JwtSecurityToken(
             issuer: issuer,
             claims: claims,

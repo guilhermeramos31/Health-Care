@@ -1,1 +1,34 @@
-[]
+[
+  {
+    "ContainingType": "HealthCare.Controllers.HealthCareController",
+    "Method": "AddRole",
+    "RelativePath": "HealthCare/add-role",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeRole",
+        "Type": "HealthCare.Models.EntityEmployeeRole.EmployeeRole",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthCare.Controllers.HealthCareController",
+    "Method": "Register",
+    "RelativePath": "HealthCare/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestDTO",
+        "Type": "HealthCare.Models.EntityEmployee.DTO.EmployeeRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

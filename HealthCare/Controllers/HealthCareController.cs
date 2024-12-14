@@ -1,13 +1,21 @@
+using HealthCare.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using HealthCare.Models.EntityEmployee.DTO;
 
-namespace HealthCareController.Controllers
+namespace HealthCare.Controllers;
+
+[ApiController]
+[Route( "[controller]" )]
+public class HealthCareController( IEmployeeService employeeService, ITokenService tokenService, IEmployeeRoleService employeeRoleService ) : ControllerBase
 {
-    [ApiController]
-    [Route( "[controller]" )]
-    public class HealthCareController : ControllerBase
+    private readonly ITokenService _tokenService = tokenService;
+    private readonly IEmployeeService _employeeService = employeeService;
+    private readonly IEmployeeRoleService _employeeRoleService = employeeRoleService;
+
+    [HttpPost( "register" )]
+    public async Task<IActionResult> Register( EmployeeRequestDTO requestDTO )
     {
-        public HealthCareController()
-        {
-        }
+        var employee = await _employeeService.CreateAsync( requestDTO );
+        return Ok( employee );
     }
 }

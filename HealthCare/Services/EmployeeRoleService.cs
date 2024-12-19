@@ -1,19 +1,20 @@
-﻿using HealthCare.Models.EntityEmployeeRole;
-using HealthCare.Repositories.Interfaces;
+﻿using HealthCare.Models.EntityEmployee;
 using HealthCare.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Role = HealthCare.Models.EntityRole.Enum.Role;
 
 namespace HealthCare.Services;
 
-public class EmployeeRoleService( IEmployeeRoleRepository employeeRoleRepository ) : IEmployeeRoleService
+public class EmployeeRoleService( UserManager<Employee> userManager ) : IEmployeeRoleService
 {
-    private readonly IEmployeeRoleRepository _employeeRoleRepository = employeeRoleRepository;
-    public async Task<EmployeeRole> CreateAsync( EmployeeRole employeeRole )
+    private readonly UserManager<Employee> _userManager = userManager;
+
+    public async Task CreateAsync( Employee user, Role role )
     {
-        var entity = await _employeeRoleRepository.CreateAsync( employeeRole );
-        return entity;
-    }
-    public Task<EmployeeRole> GetByIdAsync( Guid id )
-    {
-        throw new NotImplementedException();
+        var result = await _userManager.AddToRoleAsync( user, role.ToString() );
+        if (!result.Succeeded)
+        {
+            throw new BadHttpRequestException( "Failed to add role to user" );
+        }
     }
 }

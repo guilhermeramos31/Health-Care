@@ -6,12 +6,15 @@ namespace HealthCare.Configurations.Jwt;
 
 public static class JwtSettings
 {
-    public static void AddAuthenticationJwt( this WebApplicationBuilder builder )
+    public static IServiceCollection AddAuthenticationJwt( this IServiceCollection services )
     {
-        var jwtBody = builder.Configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
+        var provider = services.BuildServiceProvider();
+        var configuration = provider.GetRequiredService<IConfiguration>();
+
+        var jwtBody = configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
                       ?? throw new InvalidOperationException( "JWT settings are not configured." );
 
-        builder.Services.AddAuthentication( options =>
+        services.AddAuthentication( options =>
         {
             options.DefaultScheme = IdentityConstants.ApplicationScheme;
             options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
@@ -23,10 +26,12 @@ public static class JwtSettings
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration[ jwtBody.Issuer ],
-                ValidAudience = builder.Configuration[ jwtBody.Audience ],
+                ValidIssuer = configuration[ jwtBody.Issuer ],
+                ValidAudience = configuration[ jwtBody.Audience ],
                 IssuerSigningKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtBody.SecretKey ) )
             };
         } );
+
+        return services;
     }
 }

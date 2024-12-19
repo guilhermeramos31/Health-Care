@@ -1,4 +1,5 @@
 ﻿using HealthCare.Context;
+using HealthCare.Models.EntityEmployeeRole;
 using HealthCare.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,13 +9,13 @@ public class EmployeeRoleRepository( HeathCareContext context ) : IEmployeeRoleR
 {
     private readonly HeathCareContext _context = context;
 
-    public async Task<IdentityUserRole<Guid>> CreateAsync( IdentityUserRole<Guid> employeeRole )
+    public async Task<IdentityUserRole<Guid>> CreateAsync( EmployeeRole employeeRole )
     {
         var entity = await _context.UserRoles.AddAsync( employeeRole );
         return entity.Entity;
     }
 
-    public void Delete( IdentityUserRole<Guid> employeeRole )
+    public void Delete( EmployeeRole employeeRole )
     {
         _context.UserRoles.Remove( employeeRole );
     }

@@ -22,21 +22,6 @@ namespace HealthCare.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EmployeeRole", b =>
-                {
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("RoleId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("EmployeeRole");
-                });
-
             modelBuilder.Entity("HealthCare.Models.EntityEmployee.Employee", b =>
                 {
                     b.Property<Guid>("Id")
@@ -130,6 +115,9 @@ namespace HealthCare.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("EmployeeId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -139,6 +127,8 @@ namespace HealthCare.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -250,19 +240,11 @@ namespace HealthCare.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("EmployeeRole", b =>
+            modelBuilder.Entity("HealthCare.Models.EntityRole.Role", b =>
                 {
-                    b.HasOne("HealthCare.Models.EntityRole.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("HealthCare.Models.EntityEmployee.Employee", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Role")
+                        .HasForeignKey("EmployeeId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -314,6 +296,11 @@ namespace HealthCare.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HealthCare.Models.EntityEmployee.Employee", b =>
+                {
+                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }

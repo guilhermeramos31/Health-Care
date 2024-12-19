@@ -8,6 +8,7 @@ using HealthCare.Models.EntityEmployee;
 using HealthCare.Models.EntityRole;
 using HealthCare.Repositories;
 using HealthCare.Configurations.Jwt;
+using HealthCare.Configurations.Role;
 using HealthCare.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder( args );
@@ -17,11 +18,13 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 
 //Mappers
 builder.Services.AddAutoMapper( typeof( EmployeeProfile ) );
+builder.Services.AddAutoMapper( typeof( RoleProfile ) );
 
 //ID
 builder.Services.AddScoped<HeathCareContext>();
 builder.Services.AddScoped<IRepositoryUow, RepositoryUow>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IEmployeeRoleService, EmployeeRoleService>();
 builder.Services.AddScoped<ITokenService, TokenServices>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
@@ -29,32 +32,25 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 // Connection whit DB
-var postgreUrl = "DB_URL";
 builder.Services.AddDbContext<HeathCareContext>( options =>
-    options.UseNpgsql( builder.Configuration.GetConnectionString( postgreUrl ) ) );
+    options.UseNpgsql( builder.Configuration.GetConnectionString( "DB_URL" ) ) );
 
 //EF
-builder.Services.AddIdentity<Employee, Role>( employee =>
-{
-    employee.Password.RequireDigit = true;
-    employee.Password.RequireLowercase = true;
-    employee.Password.RequireNonAlphanumeric = true;
-    employee.Password.RequireUppercase = true;
-    employee.Password.RequiredLength = 6;
-    employee.User.RequireUniqueEmail = true;
-}
-)
+builder.Services.AddIdentity<Employee, Role>(employee =>
+    {
+        employee.Password.RequireDigit = false;
+        employee.Password.RequireLowercase = false;
+        employee.Password.RequireUppercase = false;
+        employee.Password.RequireNonAlphanumeric = false;
+    } )
     .AddRoleManager<RoleManager<Role>>()
-    .AddSignInManager<SignInManager<Employee>>()
     .AddUserManager<UserManager<Employee>>()
-    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Employee, Role>>()
     .AddEntityFrameworkStores<HeathCareContext>()
     .AddDefaultTokenProviders();
 
 //Authentication
-builder.AddAuthenticationJwt();
+builder.Services.AddAuthenticationJwt();
 
 var app = builder.Build();
 
@@ -64,6 +60,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+await app.CreateRoles();
 
 app.UseHttpsRedirection();
 

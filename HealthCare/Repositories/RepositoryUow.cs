@@ -10,8 +10,6 @@ public class RepositoryUow( HeathCareContext context ) : IRepositoryUow
     private readonly HeathCareContext _context = context;
 
     private IEmployeeRepository? _employeeRepository = null;
-    private IRoleRepository? _roleRepository = null;
-    private IEmployeeRoleRepository? _userRoleRepository = null;
 
     public IEmployeeRepository EmployeeRepository
     {
@@ -19,24 +17,6 @@ public class RepositoryUow( HeathCareContext context ) : IRepositoryUow
         {
             _employeeRepository ??= new EmployeeRepository( _context );
             return _employeeRepository;
-        }
-    }
-
-    public IRoleRepository RoleRepository
-    {
-        get
-        {
-            _roleRepository ??= new RoleRepository( _context );
-            return _roleRepository;
-        }
-    }
-
-    public IEmployeeRoleRepository UserRoleRepository
-    {
-        get
-        {
-            _userRoleRepository = new EmployeeRoleRepository( _context );
-            return _userRoleRepository;
         }
     }
 

@@ -1,9 +1,9 @@
-﻿using HealthCare.Models.EntityEmployeeRole;
+﻿using HealthCare.Models.EntityEmployee;
+using HealthCare.Models.EntityRole.Enum;
 
 namespace HealthCare.Services.Interfaces;
 
 public interface IEmployeeRoleService
 {
-    Task<EmployeeRole> GetByIdAsync( Guid id );
-    Task<EmployeeRole> CreateAsync( EmployeeRole employeeRole);
+    Task CreateAsync(Employee user, Role role);
 }

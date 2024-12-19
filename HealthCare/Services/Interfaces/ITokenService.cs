@@ -1,9 +1,9 @@
-﻿using HealthCare.Models.EntityEmployee.DTO;
+﻿using HealthCare.Models.EntityEmployee;
 
 namespace HealthCare.Services.Interfaces;
 
 public interface ITokenService
 {
-    string GenerateAccessToken( EmployeeRequestDTO employee );
+    string GenerateAccessToken( Employee employee );
     string GenerateRefreshToken();
 }

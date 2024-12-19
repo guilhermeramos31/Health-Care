@@ -17,14 +17,13 @@ public class TokenServices( IConfiguration configuration, IMapper mapper ) : ITo
     private readonly IConfiguration _configuration = configuration;
     private readonly IMapper _mapper = mapper;
 
-    public string GenerateAccessToken( EmployeeRequestDTO requestDto )
+    public string GenerateAccessToken( Employee employee )
     {
-        var employee = _mapper.Map<Employee>( requestDto );
         var jwt = _configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
                     ?? throw new InvalidOperationException( "JWT settings are not configured." );
 
         var rolesNames = new List<string>();
-        foreach (var role in employee.Role)
+        foreach (var role in employee.Roles)
         {
             rolesNames.Add( role.ToString() ?? throw new ArgumentNullException( nameof( role ) ) );
         }

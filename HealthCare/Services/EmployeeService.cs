@@ -1,48 +1,43 @@
 ﻿using AutoMapper;
 using HealthCare.Models.EntityEmployee;
 using HealthCare.Models.EntityEmployee.DTO;
+using HealthCare.Models.EntityRole;
 using HealthCare.Repositories.Interfaces;
 using HealthCare.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Role = HealthCare.Models.EntityRole.Enum.Role;
 
 namespace HealthCare.Services;
 
-public class EmployeeService( IRepositoryUow uow, IMapper mapper, IRoleService roleService ) : IEmployeeService
+public class EmployeeService : IEmployeeService
 {
-    private readonly IRepositoryUow _uow = uow;
-    private readonly IMapper _mapper = mapper;
-    private readonly IRoleService _roleService = roleService;
+    private readonly IMapper _mapper;
+    private readonly IEmployeeRoleService _employeeRoleService;
+    private readonly IRepositoryUow _repositoryUow;
 
-    public async Task<EmployeeResponseDTO> CreateAsync( EmployeeRequestDTO requestDTO )
+    private readonly UserManager<Employee> _userManager;
+
+    public EmployeeService( IMapper mapper, IEmployeeRoleService employeeRoleService, IRepositoryUow repositoryUow, UserManager<Employee> userManager )
     {
-        var employee = _mapper.Map<Employee>( requestDTO );
-
-        var roles = new List<string>();
-        foreach (var rolesFor in requestDTO.RolesId)
-        {
-            roles.Add( rolesFor );
-        }
-        Console.WriteLine( roles );
-
-        return _mapper.Map<EmployeeResponseDTO>( await _uow.EmployeeRepository.CreateAsync( employee ) );
+        _mapper = mapper;
+        _employeeRoleService = employeeRoleService;
+        _repositoryUow = repositoryUow;
+        _userManager = userManager;
     }
 
-    public Task<EmployeeResponseDTO> GetByEmailAsync( string email )
+    public async Task<EmployeeResponse> CreateAsync( EmployeeRequest? request )
     {
-        throw new NotImplementedException();
-    }
+        if (request == null) throw new ArgumentNullException( nameof( request ) );
 
-    public Task<EmployeeResponseDTO> GetByIdAsync( Guid id )
-    {
-        throw new NotImplementedException();
-    }
+        var employee = _mapper.Map<Employee>( request );
 
-    public Task<EmployeeResponseDTO> GetByUserNameAsync( string userName )
-    {
-        throw new NotImplementedException();
-    }
+        var result = await _userManager.CreateAsync( employee, request.Password );
+        if (!result.Succeeded) throw new BadHttpRequestException( "Failed to create user" );
 
-    public Task<EmployeeResponseDTO> GetByUserNameOrEmailAsync( string userNameOrEmail )
-    {
-        throw new NotImplementedException();
+        await _employeeRoleService.CreateAsync( employee, request.Role );
+
+        var response = _mapper.Map<EmployeeResponse>(employee);
+
+        return response;
     }
 }

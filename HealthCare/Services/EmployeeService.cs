@@ -49,11 +49,13 @@ public class EmployeeService : IEmployeeService
         var password = await _userManager.CheckPasswordAsync( employee, request.Password );
         if (!password) throw new BadHttpRequestException( "Invalid password" );
 
+        var refreshToken = await _tokenService.GenerateRefreshToken();
+
         var result = new LoginResponse()
         {
             Employee = _mapper.Map<EmployeeResponse>( employee ),
             AccessToken = await _tokenService.GenerateAccessToken( employee ),
-            RefreshToken = await _tokenService.GenerateRefreshToken()
+            RefreshToken = refreshToken
         };
 
         return result;

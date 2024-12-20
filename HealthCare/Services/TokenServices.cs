@@ -15,7 +15,6 @@ namespace HealthCare.Services;
 public class TokenServices( IConfiguration configuration, IMapper mapper, UserManager<Employee> userManager ) : ITokenService
 {
     private readonly IConfiguration _configuration = configuration;
-    private readonly IMapper _mapper = mapper;
     private readonly UserManager<Employee> _userManager = userManager;
 
     public async Task<string> GenerateAccessToken( Employee employee )
@@ -23,7 +22,7 @@ public class TokenServices( IConfiguration configuration, IMapper mapper, UserMa
         var jwt = _configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
                     ?? throw new InvalidOperationException( "JWT settings are not configured." );
 
-        var employeeRoles = await _userManager.GetRolesAsync(employee);
+        var employeeRoles = await _userManager.GetRolesAsync( employee );
 
         var rolesNames = new List<string>();
         foreach (var role in employeeRoles)
@@ -54,8 +53,23 @@ public class TokenServices( IConfiguration configuration, IMapper mapper, UserMa
         return new JwtSecurityTokenHandler().WriteToken( token );
     }
 
-    public Task<string> GenerateRefreshToken()
+    public async Task<string> GenerateRefreshToken()
     {
-        throw new NotImplementedException();
+        var jwt = _configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
+                  ?? throw new InvalidOperationException( "JWT settings are not configured." );
+
+        var issuer = jwt.Issuer;
+        var audience = jwt.Audience;
+        var secretKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwt.SecretKey ) );
+        var credentials = new SigningCredentials( secretKey, SecurityAlgorithms.HmacSha256 );
+
+        var token = new JwtSecurityToken(
+            issuer: issuer,
+            audience: audience,
+            expires: DateTime.Now.AddMinutes( 1440 ),
+            signingCredentials: credentials
+        );
+
+        return await Task.FromResult( new JwtSecurityTokenHandler().WriteToken( token ) );
     }
 }

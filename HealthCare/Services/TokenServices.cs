@@ -72,4 +72,22 @@ public class TokenServices( IConfiguration configuration, IMapper mapper, UserMa
 
         return await Task.FromResult( new JwtSecurityTokenHandler().WriteToken( token ) );
     }
+
+    public async Task CreateUserToken( Employee employee, string token )
+    {
+        var jwt = _configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
+                  ?? throw new InvalidOperationException( "JWT settings are not configured." );
+
+        var user = await _userManager.SetAuthenticationTokenAsync(
+            employee,
+            jwt.Audience,
+            "RefreshToken",
+            token
+            );
+
+        if (!user.Succeeded)
+        {
+            throw new BadHttpRequestException( "Failed to save Refresh Token to database." );
+        }
+    }
 }

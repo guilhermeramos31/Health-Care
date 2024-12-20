@@ -50,14 +50,13 @@ public class EmployeeService : IEmployeeService
         if (!password) throw new BadHttpRequestException( "Invalid password" );
 
         var refreshToken = await _tokenService.GenerateRefreshToken();
+        await _tokenService.CreateUserToken( employee, refreshToken );
 
-        var result = new LoginResponse()
+        return new()
         {
             Employee = _mapper.Map<EmployeeResponse>( employee ),
             AccessToken = await _tokenService.GenerateAccessToken( employee ),
             RefreshToken = refreshToken
         };
-
-        return result;
     }
 }

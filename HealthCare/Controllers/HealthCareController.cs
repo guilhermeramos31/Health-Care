@@ -17,7 +17,12 @@ public class HealthCareController( IEmployeeService employeeService, ITokenServi
     [HttpPost( "register" )]
     public async Task<IActionResult> Register( EmployeeRequest request )
     {
-        var employee = await _employeeService.CreateAsync( request );
-        return Ok( employee );
+        return Ok( await _employeeService.CreateAsync( request ) );
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login( LoginRequest request )
+    {
+        return Ok( await _employeeService.LoginAsync( request ) );
     }
 }

@@ -1,7 +1,7 @@
 ﻿using HealthCare.Models.EntityEmployee;
+using HealthCare.Models.EntityRole.Enum;
 using HealthCare.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Role = HealthCare.Models.EntityRole.Enum.Role;
 
 namespace HealthCare.Services;
 

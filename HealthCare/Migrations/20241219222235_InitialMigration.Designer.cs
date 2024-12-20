@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealthCare.Migrations
 {
     [DbContext(typeof(HeathCareContext))]
-    [Migration("20241219145107_InitialMigration")]
+    [Migration("20241219222235_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -118,9 +118,6 @@ namespace HealthCare.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -130,8 +127,6 @@ namespace HealthCare.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -243,13 +238,6 @@ namespace HealthCare.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HealthCare.Models.EntityRole.Role", b =>
-                {
-                    b.HasOne("HealthCare.Models.EntityEmployee.Employee", null)
-                        .WithMany("Role")
-                        .HasForeignKey("EmployeeId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("HealthCare.Models.EntityRole.Role", null)
@@ -299,11 +287,6 @@ namespace HealthCare.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("HealthCare.Models.EntityEmployee.Employee", b =>
-                {
-                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }

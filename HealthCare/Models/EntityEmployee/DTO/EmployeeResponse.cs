@@ -1,6 +1,4 @@
-﻿using HealthCare.Models.EntityRole.DTO;
-
-namespace HealthCare.Models.EntityEmployee.DTO;
+﻿namespace HealthCare.Models.EntityEmployee.DTO;
 
 public class EmployeeResponse
 {
@@ -9,10 +7,8 @@ public class EmployeeResponse
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public string Observations { get; set; } = string.Empty;
-    public ICollection<RoleResponse> Role { get; set; }
     public DateTime CreateAt { get; set; }
     public DateTime UpdateAt { get; set; }
 }

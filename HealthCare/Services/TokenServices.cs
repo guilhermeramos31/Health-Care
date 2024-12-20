@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using AutoMapper;
-using HealthCare.Models.EntityEmployee.DTO;
 using HealthCare.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,21 +8,25 @@ using System.Text;
 using System.Text.Json;
 using HealthCare.Models.EntityEmployee;
 using HealthCare.Configurations.Jwt;
+using Microsoft.AspNetCore.Identity;
 
 namespace HealthCare.Services;
 
-public class TokenServices( IConfiguration configuration, IMapper mapper ) : ITokenService
+public class TokenServices( IConfiguration configuration, IMapper mapper, UserManager<Employee> userManager ) : ITokenService
 {
     private readonly IConfiguration _configuration = configuration;
     private readonly IMapper _mapper = mapper;
+    private readonly UserManager<Employee> _userManager = userManager;
 
-    public string GenerateAccessToken( Employee employee )
+    public async Task<string> GenerateAccessToken( Employee employee )
     {
         var jwt = _configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
                     ?? throw new InvalidOperationException( "JWT settings are not configured." );
 
+        var employeeRoles = await _userManager.GetRolesAsync(employee);
+
         var rolesNames = new List<string>();
-        foreach (var role in employee.Roles)
+        foreach (var role in employeeRoles)
         {
             rolesNames.Add( role.ToString() ?? throw new ArgumentNullException( nameof( role ) ) );
         }
@@ -51,7 +54,7 @@ public class TokenServices( IConfiguration configuration, IMapper mapper ) : ITo
         return new JwtSecurityTokenHandler().WriteToken( token );
     }
 
-    public string GenerateRefreshToken()
+    public Task<string> GenerateRefreshToken()
     {
         throw new NotImplementedException();
     }

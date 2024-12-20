@@ -4,6 +4,6 @@ namespace HealthCare.Services.Interfaces;
 
 public interface ITokenService
 {
-    string GenerateAccessToken( Employee employee );
-    string GenerateRefreshToken();
+    Task<string> GenerateAccessToken( Employee employee );
+    Task<string> GenerateRefreshToken();
 }

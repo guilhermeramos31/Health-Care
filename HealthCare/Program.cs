@@ -8,8 +8,11 @@ using HealthCare.Models.EntityEmployee;
 using HealthCare.Models.EntityRole;
 using HealthCare.Repositories;
 using HealthCare.Configurations.Jwt;
+using HealthCare.Configurations.Jwt.Interfaces;
 using HealthCare.Configurations.Role;
 using HealthCare.Repositories.Interfaces;
+using HealthCare.Utils;
+using HealthCare.Utils.Interfaces;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder( args );
@@ -28,6 +31,9 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IEmployeeRoleService, EmployeeRoleService>();
 builder.Services.AddScoped<ITokenService, TokenServices>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IContextApi, ContextApi>();
+builder.Services.AddScoped<IJwt, Jwt>();
+builder.Services.AddHttpContextAccessor();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
@@ -51,7 +57,8 @@ builder.Services.AddIdentity<Employee, Role>(employee =>
     .AddDefaultTokenProviders();
 
 //Authentication
-builder.Services.AddAuthenticationJwt();
+await builder.Services.AddAuthenticationJwt();
+builder.Configuration.GetSection("JwtSettings").Get<JwtBody>();
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -96,6 +103,8 @@ await app.CreateRoles();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapControllers();
 

@@ -1,24 +1,25 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HealthCare.Configurations.Jwt.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthCare.Configurations.Jwt;
 
 public static class JwtSettings
 {
-    public static IServiceCollection AddAuthenticationJwt( this IServiceCollection services )
+    public static async Task AddAuthenticationJwt(this IServiceCollection services)
     {
         var provider = services.BuildServiceProvider();
-        var configuration = provider.GetRequiredService<IConfiguration>();
+        var jwt = await provider.GetRequiredService<IJwt>().GetBody();
 
-        var jwtBody = configuration.GetSection( "JwtSettings" ).Get<JwtBody>()
-                      ?? throw new InvalidOperationException( "JWT settings are not configured." );
-
-        services.AddAuthentication( options =>
+        services.AddAuthentication(options =>
         {
             options.DefaultScheme = IdentityConstants.ApplicationScheme;
             options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-        } ).AddJwtBearer( options =>
+        }).AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
@@ -26,12 +27,26 @@ public static class JwtSettings
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration[ jwtBody.Issuer ],
-                ValidAudience = configuration[ jwtBody.Audience ],
-                IssuerSigningKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtBody.SecretKey ) )
-            };
-        } );
+                ValidAudience = jwt.Audience,
+                ValidIssuers = jwt.Issuer,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
+                IssuerValidator = (issuer, token, parameters) =>
+                {
+                    if (!jwt.Issuer.Contains(issuer))
+                    {
+                        throw new SecurityTokenInvalidIssuerException("Invalid issuer.");
+                    }
 
-        return services;
+                    return issuer;
+                }
+            };
+        });
+        
+        services.AddAuthorization(auth =>
+        {
+            auth.AddPolicy("Bearer",
+                new AuthorizationPolicyBuilder().AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser().Build());
+        });
     }
 }

@@ -1,4 +1,4 @@
-﻿using HealthCare.Models.EntityEmployee;
+﻿using HealthCare.Models.EmployeeEntity;
 
 namespace HealthCare.Repositories.Interfaces;
 

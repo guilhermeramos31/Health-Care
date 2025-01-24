@@ -1,4 +1,4 @@
-﻿using HealthCare.Models.EntityEmployeeRole;
+﻿using HealthCare.Models.EmployeeRoleEntity;
 using Microsoft.AspNetCore.Identity;
 
 namespace HealthCare.Repositories.Interfaces;

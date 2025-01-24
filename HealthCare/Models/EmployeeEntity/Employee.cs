@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-namespace HealthCare.Models.EntityEmployee;
+namespace HealthCare.Models.EmployeeEntity;
 
 public class Employee : IdentityUser<Guid>
 {

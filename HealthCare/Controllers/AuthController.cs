@@ -1,20 +1,14 @@
+﻿using HealthCare.Models.EmployeeEntity.DTO;
 using HealthCare.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using HealthCare.Models.EntityEmployee.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCare.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class HealthCareController(IEmployeeService employeeService) : ControllerBase
+public class AuthController(IEmployeeService employeeService) : ControllerBase
 {
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(EmployeeRequest request)
-    {
-        return Ok(await employeeService.CreateAsync(request));
-    }
-
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {

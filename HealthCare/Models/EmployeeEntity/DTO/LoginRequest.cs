@@ -1,4 +1,4 @@
-﻿namespace HealthCare.Models.EntityEmployee.DTO;
+﻿namespace HealthCare.Models.EmployeeEntity.DTO;
 
 public class LoginRequest
 {

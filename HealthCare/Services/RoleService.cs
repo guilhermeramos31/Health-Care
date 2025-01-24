@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using HealthCare.Models.EntityRole;
-using HealthCare.Models.EntityRole.DTO;
+using HealthCare.Models.RoleEntity;
+using HealthCare.Models.RoleEntity.DTO;
 using HealthCare.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 

@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using HealthCare.Models.EntityEmployee;
+using HealthCare.Models.EmployeeEntity;
 using HealthCare.Configurations.Jwt.Interfaces;
 using HealthCare.Utils.Interfaces;
 using Microsoft.AspNetCore.Identity;

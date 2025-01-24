@@ -1,5 +1,5 @@
 ﻿using HealthCare.Context;
-using HealthCare.Models.EntityEmployeeRole;
+using HealthCare.Models.EmployeeRoleEntity;
 using HealthCare.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 

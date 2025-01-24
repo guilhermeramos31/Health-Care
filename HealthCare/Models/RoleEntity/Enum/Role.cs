@@ -1,4 +1,4 @@
-﻿namespace HealthCare.Models.EntityRole.Enum;
+﻿namespace HealthCare.Models.RoleEntity.Enum;
 
 public enum Role
 {

@@ -1,6 +1,6 @@
-﻿using HealthCare.Models.EntityRole.Enum;
+﻿using HealthCare.Models.RoleEntity.Enum;
 
-namespace HealthCare.Models.EntityEmployee.DTO;
+namespace HealthCare.Models.EmployeeEntity.DTO;
 
 public class EmployeeRequest
 {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HealthCare.Configurations.Jwt.Interfaces;
-using HealthCare.Models.EntityEmployee;
-using HealthCare.Models.EntityEmployee.DTO;
+using HealthCare.Models.EmployeeEntity;
+using HealthCare.Models.EmployeeEntity.DTO;
 using HealthCare.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -1,4 +1,4 @@
-﻿namespace HealthCare.Models.EntityRole.DTO;
+﻿namespace HealthCare.Models.RoleEntity.DTO;
 
 public class RoleResponse
 {

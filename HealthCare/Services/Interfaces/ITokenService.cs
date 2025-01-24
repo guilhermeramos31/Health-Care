@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using HealthCare.Models.EntityEmployee;
+using HealthCare.Models.EmployeeEntity;
 
 namespace HealthCare.Services.Interfaces;
 

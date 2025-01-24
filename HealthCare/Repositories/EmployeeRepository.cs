@@ -1,5 +1,5 @@
 ﻿using HealthCare.Context;
-using HealthCare.Models.EntityEmployee;
+using HealthCare.Models.EmployeeEntity;
 using HealthCare.Repositories.Interfaces;
 
 namespace HealthCare.Repositories;

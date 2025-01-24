@@ -1,4 +1,4 @@
-﻿using HealthCare.Models.EntityEmployee.DTO;
+﻿using HealthCare.Models.EmployeeEntity.DTO;
 
 namespace HealthCare.Services.Interfaces;
 

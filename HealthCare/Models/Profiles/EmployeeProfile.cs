@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using HealthCare.Models.EntityEmployee;
-using HealthCare.Models.EntityEmployee.DTO;
+using HealthCare.Models.EmployeeEntity;
+using HealthCare.Models.EmployeeEntity.DTO;
 
 namespace HealthCare.Models.Profiles;
 public class EmployeeProfile : Profile

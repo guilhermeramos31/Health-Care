@@ -1,5 +1,4 @@
-﻿
-namespace HealthCare.Repositories.Interfaces;
+﻿namespace HealthCare.Repositories.Interfaces;
 
 public interface IRepositoryUow
 {

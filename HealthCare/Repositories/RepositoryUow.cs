@@ -1,10 +1,10 @@
-﻿using HealthCare.Context;
+﻿using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HealthCare.Repositories;
 
-public class RepositoryUow(HeathCareContext context) : IRepositoryUow
+public class RepositoryUow(HealthCareContext context) : IRepositoryUow
 {
     private IDbContextTransaction? _transaction = null;
     private IEmployeeRepository? _employeeRepository = null;

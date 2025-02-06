@@ -1,12 +1,12 @@
-﻿using HealthCare.Context;
+﻿using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Repositories.Interfaces;
 
 namespace HealthCare.Repositories;
 
-public class EmployeeRepository(HeathCareContext context) : IEmployeeRepository
+public class EmployeeRepository(HealthCareContext context) : IEmployeeRepository
 {
-    private readonly HeathCareContext _context = context;
+    private readonly HealthCareContext _context = context;
 
     public async Task<Employee> CreateAsync(Employee employee)
     {

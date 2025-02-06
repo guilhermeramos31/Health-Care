@@ -1,4 +1,3 @@
-using HealthCare.Context;
 using HealthCare.Services;
 using HealthCare.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +9,7 @@ using HealthCare.Repositories;
 using HealthCare.Configurations.Role;
 using HealthCare.Infrastructure.Configurations.Jwt;
 using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
+using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Repositories.Interfaces;
 using HealthCare.Utils;
 using HealthCare.Utils.Interfaces;
@@ -25,7 +25,7 @@ builder.Services.AddAutoMapper(typeof(EmployeeProfile));
 builder.Services.AddAutoMapper(typeof(RoleProfile));
 
 //ID
-builder.Services.AddScoped<HeathCareContext>();
+builder.Services.AddScoped<HealthCareContext>();
 builder.Services.AddScoped<IRepositoryUow, RepositoryUow>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IEmployeeRoleService, EmployeeRoleService>();
@@ -40,7 +40,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Connection whit DB
-builder.Services.AddDbContext<HeathCareContext>(options =>
+builder.Services.AddDbContext<HealthCareContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //EF
@@ -53,7 +53,7 @@ builder.Services.AddIdentity<Employee, Role>(employee =>
     })
     .AddRoleManager<RoleManager<Role>>()
     .AddUserManager<UserManager<Employee>>()
-    .AddEntityFrameworkStores<HeathCareContext>()
+    .AddEntityFrameworkStores<HealthCareContext>()
     .AddDefaultTokenProviders();
 
 //Authentication

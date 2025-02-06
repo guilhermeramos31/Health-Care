@@ -1,12 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using HealthCare.Configurations.Jwt.Interfaces;
+using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
-namespace HealthCare.Configurations.Jwt;
+namespace HealthCare.Infrastructure.Configurations.Jwt;
 
 public static class JwtSettings
 {

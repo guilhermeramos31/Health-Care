@@ -7,22 +7,22 @@ using HealthCare.Models.Profiles;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Models.RoleEntity;
 using HealthCare.Repositories;
-using HealthCare.Configurations.Jwt;
-using HealthCare.Configurations.Jwt.Interfaces;
 using HealthCare.Configurations.Role;
+using HealthCare.Infrastructure.Configurations.Jwt;
+using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
 using HealthCare.Repositories.Interfaces;
 using HealthCare.Utils;
 using HealthCare.Utils.Interfaces;
 using Microsoft.OpenApi.Models;
 
-var builder = WebApplication.CreateBuilder( args );
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers().AddNewtonsoftJson();
 
 //Mappers
-builder.Services.AddAutoMapper( typeof( EmployeeProfile ) );
-builder.Services.AddAutoMapper( typeof( RoleProfile ) );
+builder.Services.AddAutoMapper(typeof(EmployeeProfile));
+builder.Services.AddAutoMapper(typeof(RoleProfile));
 
 //ID
 builder.Services.AddScoped<HeathCareContext>();
@@ -40,8 +40,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Connection whit DB
-builder.Services.AddDbContext<HeathCareContext>( options =>
-    options.UseNpgsql( builder.Configuration.GetConnectionString( "DB_URL" ) ) );
+builder.Services.AddDbContext<HeathCareContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //EF
 builder.Services.AddIdentity<Employee, Role>(employee =>
@@ -50,7 +50,7 @@ builder.Services.AddIdentity<Employee, Role>(employee =>
         employee.Password.RequireLowercase = false;
         employee.Password.RequireUppercase = false;
         employee.Password.RequireNonAlphanumeric = false;
-    } )
+    })
     .AddRoleManager<RoleManager<Role>>()
     .AddUserManager<UserManager<Employee>>()
     .AddEntityFrameworkStores<HeathCareContext>()
@@ -72,7 +72,7 @@ builder.Services.AddSwaggerGen(options =>
         In = ParameterLocation.Header,
         Description = "JWT Authorization header using the Bearer scheme."
     });
-    
+
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {

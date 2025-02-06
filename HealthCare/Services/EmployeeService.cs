@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HealthCare.Configurations.Jwt.Interfaces;
+using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Models.EmployeeEntity.DTO;
 using HealthCare.Services.Interfaces;

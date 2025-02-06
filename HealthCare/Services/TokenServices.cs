@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using HealthCare.Models.EmployeeEntity;
-using HealthCare.Configurations.Jwt.Interfaces;
+using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
 using HealthCare.Utils.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -26,8 +26,9 @@ public class TokenServices(
         var rolesNames = new List<string>();
         foreach (var role in employeeRoles)
         {
-            rolesNames.Add(role.ToString() ?? throw new ArgumentNullException(nameof(role)));
+            rolesNames.Add(role ?? throw new ArgumentNullException(nameof(role)));
         }
+
         var audience = jwtBody.Audience;
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBody.SecretKey));
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -41,7 +42,7 @@ public class TokenServices(
         };
 
         var context = await contextApi.GetContextAsync();
-        
+
         var token = new JwtSecurityToken(
             issuer: context.Request.Headers.Origin,
             claims: claims,
@@ -55,14 +56,13 @@ public class TokenServices(
 
     public async Task<string> GenerateRefreshToken()
     {
-        
         var jwtBody = await jwt.GetBody();
 
 
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBody.SecretKey));
 
         var context = await contextApi.GetContextAsync();
-        
+
         var token = new JwtSecurityToken(
             context.Request.Headers.Origin,
             jwtBody.Audience,
@@ -76,7 +76,7 @@ public class TokenServices(
     public async Task CreateUserToken(Employee employee, string token)
     {
         var jwtBody = await jwt.GetBody();
-        
+
         var user = await userManager.SetAuthenticationTokenAsync(
             employee,
             jwtBody.Audience,

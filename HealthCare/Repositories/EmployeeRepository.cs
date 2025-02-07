@@ -6,11 +6,9 @@ namespace HealthCare.Repositories;
 
 public class EmployeeRepository(HealthCareContext context) : IEmployeeRepository
 {
-    private readonly HealthCareContext _context = context;
-
     public async Task<Employee> CreateAsync(Employee employee)
     {
-        var entityEmployee = await _context.Users.AddAsync(employee);
+        var entityEmployee = await context.Users.AddAsync(employee);
         return entityEmployee.Entity;
     }
 

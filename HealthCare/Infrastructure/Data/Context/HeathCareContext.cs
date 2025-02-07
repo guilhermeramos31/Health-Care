@@ -13,7 +13,7 @@ public class HealthCareContext(DbContextOptions<HealthCareContext> options)
 {
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Address> Addresses { get; set; }
-    
+
     public DbSet<ProfessionalPatient> ProfessionalPatients { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -29,10 +29,10 @@ public class HealthCareContext(DbContextOptions<HealthCareContext> options)
             .HasOne(pp => pp.Employee)
             .WithMany(p => p.ProfessionalPatients)
             .HasForeignKey(pp => pp.EmployeeId);
-        
-        builder.Entity<Address>()
-            .HasOne(a => a.Patient)
-            .WithMany(a => a.Address)
-            .HasForeignKey(a => a.PatientId);
+
+        builder.Entity<Patient>()
+            .HasOne(p => p.Address)
+            .WithMany(a => a.Patient)
+            .HasForeignKey(p => p.AddressId);
     }
 }

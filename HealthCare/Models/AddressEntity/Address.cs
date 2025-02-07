@@ -16,6 +16,5 @@ public class Address : BaseEntity
     public string? Landmark { get; set; } = string.Empty;
     public string AddressType { get; set; } = string.Empty;
 
-    public Guid PatientId { get; set; }
-    public Patient Patient { get; set; }
+    public List<Patient> Patient { get; set; } = new();
 }

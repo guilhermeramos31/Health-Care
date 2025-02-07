@@ -1,22 +1,26 @@
-﻿using HealthCare.Models.AddressEntity;
-using HealthCare.Models.Base;
+﻿using System.Diagnostics.CodeAnalysis;
+using HealthCare.Models.AddressEntity;
 using HealthCare.Models.Enums;
-using HealthCare.Models.ProfessionalPatientEntity;
+using Microsoft.Build.Framework;
 
-namespace HealthCare.Models.PatientEntity;
+namespace HealthCare.Models.PatientEntity.Dto;
 
-public class Patient : BaseEntity
+public class PatientRequestDto
 {
+    [Required]
     public string Name { get; set; } = string.Empty;
+    [Required]
     public string Nationality { get; set; } = string.Empty;
+    [Required]
     public MaritalStatus MaritalStatus { get; set; }
+    [Required]
     public string Cns { get; set; } = string.Empty;
+    [Required]
     public string Rg { get; set; } = string.Empty;
+    [Required]
     public string Cpf { get; set; } = string.Empty;
+    [Required]
     public DateTime DateOfBirth { get; set; }
-    public DateTime AdmissionDate { get; set; }
-
-    public Guid AddressId { get; set; }
+    [Required]
     public Address Address { get; set; } = new();
-    public List<ProfessionalPatient> ProfessionalPatients { get; set; } = new();
 }

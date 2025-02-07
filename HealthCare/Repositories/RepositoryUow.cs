@@ -8,8 +8,10 @@ public class RepositoryUow(HealthCareContext context) : IRepositoryUow
 {
     private IDbContextTransaction? _transaction = null;
     private IEmployeeRepository? _employeeRepository = null;
+    private IAddressRepository? _addressRepository = null;
 
     public IEmployeeRepository EmployeeRepository => _employeeRepository ??= new EmployeeRepository(context);
+    public IAddressRepository AddressRepository => _addressRepository ??= new AddressRepository(context);
 
     public void Dispose()
     {

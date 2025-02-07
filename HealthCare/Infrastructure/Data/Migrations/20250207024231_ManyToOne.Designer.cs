@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealthCare.Migrations
 {
     [DbContext(typeof(HealthCareContext))]
-    [Migration("20250206191725_Patient")]
-    partial class Patient
+    [Migration("20250207024231_ManyToOne")]
+    partial class ManyToOne
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,9 +56,6 @@ namespace HealthCare.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("State")
                         .HasColumnType("integer");
 
@@ -74,8 +71,6 @@ namespace HealthCare.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
 
                     b.ToTable("Addresses");
                 });
@@ -169,6 +164,9 @@ namespace HealthCare.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("AdmissionDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -205,6 +203,8 @@ namespace HealthCare.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.ToTable("Patients");
                 });
@@ -366,15 +366,15 @@ namespace HealthCare.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HealthCare.Models.AddressEntity.Address", b =>
+            modelBuilder.Entity("HealthCare.Models.PatientEntity.Patient", b =>
                 {
-                    b.HasOne("HealthCare.Models.PatientEntity.Patient", "Patient")
-                        .WithMany("Address")
-                        .HasForeignKey("PatientId")
+                    b.HasOne("HealthCare.Models.AddressEntity.Address", "Address")
+                        .WithMany("Patient")
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Patient");
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("HealthCare.Models.ProfessionalPatientEntity.ProfessionalPatient", b =>
@@ -447,6 +447,11 @@ namespace HealthCare.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("HealthCare.Models.AddressEntity.Address", b =>
+                {
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("HealthCare.Models.EmployeeEntity.Employee", b =>
                 {
                     b.Navigation("ProfessionalPatients");
@@ -454,8 +459,6 @@ namespace HealthCare.Migrations
 
             modelBuilder.Entity("HealthCare.Models.PatientEntity.Patient", b =>
                 {
-                    b.Navigation("Address");
-
                     b.Navigation("ProfessionalPatients");
                 });
 #pragma warning restore 612, 618

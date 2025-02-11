@@ -4,11 +4,11 @@ using HealthCare.Repositories.Interfaces;
 
 namespace HealthCare.Repositories;
 
-public class EmployeeRepository(HealthCareContext context) : IEmployeeRepository
+public class EmployeeRepository(HealthCareContext dbContext) : IEmployeeRepository
 {
     public async Task<Employee> CreateAsync(Employee employee)
     {
-        var entityEmployee = await context.Users.AddAsync(employee);
+        var entityEmployee = await dbContext.Users.AddAsync(employee);
         return entityEmployee.Entity;
     }
 
@@ -17,9 +17,9 @@ public class EmployeeRepository(HealthCareContext context) : IEmployeeRepository
         throw new NotImplementedException();
     }
 
-    public Task<Employee> GetByIdAsync(string id)
+    public async Task<Employee?> GetByIdAsync(string id)
     {
-        throw new NotImplementedException();
+        return await dbContext.FindAsync<Employee>(id);
     }
 
     public Task<Employee> GetByUserNameAsync(string userName)

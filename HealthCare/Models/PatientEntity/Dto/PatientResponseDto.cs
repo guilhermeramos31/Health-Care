@@ -1,4 +1,5 @@
 ﻿using HealthCare.Models.AddressEntity;
+using HealthCare.Models.AddressEntity.Dto;
 using HealthCare.Models.Enums;
 
 namespace HealthCare.Models.PatientEntity.Dto;
@@ -10,5 +11,5 @@ public class PatientResponseDto
     public MaritalStatus MaritalStatus { get; set; }
     public DateTime DateOfBirth { get; set; }
     public DateTime AdmissionDate { get; set; }
-    public Address Address { get; set; } = new();
+    public AddressDto Address { get; set; } = new();
 }

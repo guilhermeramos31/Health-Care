@@ -7,19 +7,19 @@ namespace HealthCare.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(IEmployeeService employeeService) : ControllerBase
+public class AuthController(IServiceUow serviceUow) : ControllerBase
 {
-    [HttpPost("login")]
+    [HttpPost("[action]")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        return Ok(await employeeService.LoginAsync(request));
+        return Ok(await serviceUow.EmployeeService!.LoginAsync(request));
     }
 
     [Authorize("Bearer")]
-    [HttpGet("refresh-token")]
+    [HttpGet("[action]")]
     public async Task<IActionResult> RefreshToken(string refreshToken)
     {
         Console.WriteLine("ok");
-        return Ok(await employeeService.RefreshToken(refreshToken));
+        return Ok(await serviceUow.EmployeeService!.RefreshToken(refreshToken));
     }
 }

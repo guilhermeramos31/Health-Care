@@ -13,8 +13,8 @@ public class AddressService(IRepositoryUow repositoryUow, IMapper mapper) : IAdd
         return mapper.Map<AddressDto>(await repositoryUow.AddressRepository.Create(mapper.Map<Address>(address)));
     }
 
-    public AddressDto Update(AddressDto address)
+    public Address Update(AddressDto address)
     {
-        return mapper.Map<AddressDto>(repositoryUow.AddressRepository.Update(mapper.Map<Address>(address)));
+        return repositoryUow.AddressRepository.Update(mapper.Map<Address>(address));
     }
 }

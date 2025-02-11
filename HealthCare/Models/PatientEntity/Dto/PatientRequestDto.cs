@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using HealthCare.Models.AddressEntity;
+using HealthCare.Models.AddressEntity.Dto;
 using HealthCare.Models.Enums;
 using Microsoft.Build.Framework;
 
@@ -22,5 +23,5 @@ public class PatientRequestDto
     [Required]
     public DateTime DateOfBirth { get; set; }
     [Required]
-    public Address Address { get; set; } = new();
+    public AddressDto Address { get; set; } = new();
 }

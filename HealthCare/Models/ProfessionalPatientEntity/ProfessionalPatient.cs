@@ -6,9 +6,9 @@ namespace HealthCare.Models.ProfessionalPatientEntity;
 
 public class ProfessionalPatient : BaseEntity
 {
-    public Guid EmployeeId { get; set; }
-    public Employee Employee { get; set; }
-    
-    public Guid PatientId { get; set; }
-    public Patient Patient { get; set; }
+    public Guid EmployeeId { get; init; }
+    public Employee Employee { get; init; } = null!;
+
+    public Guid PatientId { get; init; }
+    public Patient Patient { get; init; } = null!;
 }

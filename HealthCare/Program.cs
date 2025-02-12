@@ -1,4 +1,3 @@
-using HealthCare.Context;
 using HealthCare.Services;
 using HealthCare.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +9,10 @@ using HealthCare.Repositories;
 using HealthCare.Configurations.Role;
 using HealthCare.Infrastructure.Configurations.Jwt;
 using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
+using HealthCare.Infrastructure.Data.Context;
+using HealthCare.Infrastructure.Managers;
+using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Repositories.Interfaces;
-using HealthCare.Utils;
-using HealthCare.Utils.Interfaces;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,18 +20,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers().AddNewtonsoftJson();
 
+builder.Services.Configure<JwtBody>(builder.Configuration.GetSection("JwtSettings"));
+
+
 //Mappers
 builder.Services.AddAutoMapper(typeof(EmployeeProfile));
 builder.Services.AddAutoMapper(typeof(RoleProfile));
 
-//ID
-builder.Services.AddScoped<HeathCareContext>();
+builder.Services.AddScoped<HealthCareContext>();
 builder.Services.AddScoped<IRepositoryUow, RepositoryUow>();
-builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-builder.Services.AddScoped<IEmployeeRoleService, EmployeeRoleService>();
-builder.Services.AddScoped<ITokenService, TokenServices>();
-builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IContextApi, ContextApi>();
+builder.Services.AddScoped<IManagerUow, ManagerUow>();
+builder.Services.AddScoped<IServiceUow, ServiceUow>();
 builder.Services.AddScoped<IJwt, Jwt>();
 builder.Services.AddHttpContextAccessor();
 
@@ -40,7 +39,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Connection whit DB
-builder.Services.AddDbContext<HeathCareContext>(options =>
+builder.Services.AddDbContext<HealthCareContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //EF
@@ -53,7 +52,7 @@ builder.Services.AddIdentity<Employee, Role>(employee =>
     })
     .AddRoleManager<RoleManager<Role>>()
     .AddUserManager<UserManager<Employee>>()
-    .AddEntityFrameworkStores<HeathCareContext>()
+    .AddEntityFrameworkStores<HealthCareContext>()
     .AddDefaultTokenProviders();
 
 //Authentication

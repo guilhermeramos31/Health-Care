@@ -6,11 +6,11 @@ namespace HealthCare.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EmployeeController(IEmployeeService employeeService) : ControllerBase
+public class EmployeeController(IServiceUow serviceUow) : ControllerBase
 {
-    [HttpPost("register")]
+    [HttpPost("[action]")]
     public async Task<IActionResult> Register(EmployeeRequest request)
     {
-        return Ok(await employeeService.CreateAsync(request));
+        return Ok(await serviceUow.EmployeeService!.CreateAsync(request));
     }
 }

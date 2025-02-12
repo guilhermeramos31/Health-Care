@@ -1,16 +1,14 @@
-﻿using HealthCare.Context;
+﻿using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Repositories.Interfaces;
 
 namespace HealthCare.Repositories;
 
-public class EmployeeRepository(HeathCareContext context) : IEmployeeRepository
+public class EmployeeRepository(HealthCareContext dbContext) : IEmployeeRepository
 {
-    private readonly HeathCareContext _context = context;
-
     public async Task<Employee> CreateAsync(Employee employee)
     {
-        var entityEmployee = await _context.Users.AddAsync(employee);
+        var entityEmployee = await dbContext.Users.AddAsync(employee);
         return entityEmployee.Entity;
     }
 
@@ -19,9 +17,9 @@ public class EmployeeRepository(HeathCareContext context) : IEmployeeRepository
         throw new NotImplementedException();
     }
 
-    public Task<Employee> GetByIdAsync(string id)
+    public async Task<Employee?> GetByIdAsync(string id)
     {
-        throw new NotImplementedException();
+        return await dbContext.FindAsync<Employee>(id);
     }
 
     public Task<Employee> GetByUserNameAsync(string userName)

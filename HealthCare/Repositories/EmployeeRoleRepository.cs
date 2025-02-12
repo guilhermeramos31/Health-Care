@@ -1,11 +1,11 @@
-﻿using HealthCare.Context;
+﻿using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Models.EmployeeRoleEntity;
 using HealthCare.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace HealthCare.Repositories;
 
-public class EmployeeRoleRepository(HeathCareContext context) : IEmployeeRoleRepository
+public class EmployeeRoleRepository(HealthCareContext context) : IEmployeeRoleRepository
 {
     public async Task<IdentityUserRole<Guid>> CreateAsync(EmployeeRole employeeRole)
     {

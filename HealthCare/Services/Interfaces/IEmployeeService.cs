@@ -7,4 +7,5 @@ public interface IEmployeeService
     Task<EmployeeResponse> CreateAsync(EmployeeRequest? request);
     Task<LoginResponse> LoginAsync(LoginRequest? request);
     Task<LoginResponse> RefreshToken(string refreshToken);
+    Task<EmployeeResponse> FindById(string userId);
 }

@@ -2,26 +2,29 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
+using HealthCare.Infrastructure.Configurations.Jwt;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
-using HealthCare.Utils.Interfaces;
-using Microsoft.AspNetCore.Identity;
+using HealthCare.Infrastructure.Managers.Interfaces;
+using HealthCare.Utils;
+using Microsoft.Extensions.Options;
+using Encoding = System.Text.Encoding;
 
 namespace HealthCare.Services;
 
-public class TokenServices(
-    UserManager<Employee> userManager,
-    IContextApi contextApi,
-    IJwt jwt)
+public class TokenService(
+    IManagerUow managerUow,
+    IHttpContextAccessor accessor,
+    IJwt jwt,
+    IOptions<JwtBody> jwtOptions)
     : ITokenService
 {
     public async Task<string> GenerateAccessToken(Employee employee)
     {
         var jwtBody = await jwt.GetBody();
 
-        var employeeRoles = await userManager.GetRolesAsync(employee);
+        var employeeRoles = await managerUow.UserManager.GetRolesAsync(employee);
 
         var rolesNames = new List<string>();
         foreach (var role in employeeRoles)
@@ -41,7 +44,7 @@ public class TokenServices(
             new("role", JsonSerializer.Serialize(rolesNames)),
         };
 
-        var context = await contextApi.GetContextAsync();
+        var context = ContextHealthCare.Get(accessor);
 
         var token = new JwtSecurityToken(
             issuer: context.Request.Headers.Origin,
@@ -57,11 +60,9 @@ public class TokenServices(
     public async Task<string> GenerateRefreshToken()
     {
         var jwtBody = await jwt.GetBody();
-
-
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBody.SecretKey));
 
-        var context = await contextApi.GetContextAsync();
+        var context = accessor.Get();
 
         var token = new JwtSecurityToken(
             context.Request.Headers.Origin,
@@ -77,7 +78,7 @@ public class TokenServices(
     {
         var jwtBody = await jwt.GetBody();
 
-        var user = await userManager.SetAuthenticationTokenAsync(
+        var user = await managerUow.UserManager.SetAuthenticationTokenAsync(
             employee,
             jwtBody.Audience,
             "RefreshToken",
@@ -92,21 +93,10 @@ public class TokenServices(
 
     public async Task<ClaimsPrincipal> GetPrincipalFromExpiredToken()
     {
-        var jwtBody = await jwt.GetBody();
-
-        var token = await GetTokenByContext();
+        var token = accessor.GetToken();
         if (token == null) throw new BadHttpRequestException("Failed to get user token.");
 
-        var validateParameters = new TokenValidationParameters
-        {
-            ValidateAudience = true,
-            ValidateIssuer = true,
-            ValidIssuers = jwtBody.Issuer,
-            ValidAudience = jwtBody.Audience,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBody.SecretKey))
-        };
+        var validateParameters = jwtOptions.TokenValidationParams();
         return await Task.Run(() =>
         {
             var handler = new JwtSecurityTokenHandler();
@@ -123,19 +113,17 @@ public class TokenServices(
         });
     }
 
-    private async Task<string?> GetTokenByContext()
+    public ClaimsPrincipal ValidateToken(string token, TokenValidationParameters tokenValidationParams)
     {
-        var context = await contextApi.GetContextAsync();
-        return await Task.Run(() =>
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParams, out var securityToken);
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                StringComparison.InvariantCultureIgnoreCase))
         {
-            var authorization = context.Request.Headers.Authorization.ToString();
+            throw new SecurityTokenException("Invalid token");
+        }
 
-            if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
-            {
-                return authorization.Substring("Bearer ".Length).Trim();
-            }
-
-            return null;
-        });
+        return claimsPrincipal;
     }
 }

@@ -8,6 +8,7 @@ public interface IPatientRepository
     Task<Patient> Create(Patient newPatient);
     Patient Update(Patient patient);
     Task<Patient?> FindByCpf(string cpf);
-    Task<Patient?> GetPatient(string id);
+    Task<Patient?> GetPatient(Guid id);
     void Delete(Patient patient);
+    Task<List<Patient>> GetPatients(Guid userId, int? pageNumber, int? pageSize);
 }

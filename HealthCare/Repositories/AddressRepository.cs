@@ -1,6 +1,7 @@
 ﻿using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Models.AddressEntity;
 using HealthCare.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCare.Repositories;
 
@@ -16,5 +17,16 @@ public class AddressRepository(HealthCareContext context) : IAddressRepository
     {
         var address = context.Addresses.Update(updateAddress);
         return address.Entity;
+    }
+
+    public async Task<Address?> GetAddress(Guid addressId)
+    {
+        var address = await context.Addresses.FirstOrDefaultAsync(x => x.Id == addressId);
+        return address;
+    }
+
+    public void Delete(Address addressToDelete)
+    {
+        context.Addresses.Remove(addressToDelete);
     }
 }

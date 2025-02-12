@@ -17,17 +17,31 @@ public class PatientController(IServiceUow serviceUow) : ControllerBase
     }
 
     [Authorize("Bearer")]
-    [HttpPut("[action]")]
-    public async Task<IActionResult> Update(PatientRequestDto patientRequestDto)
+    [HttpPut("[action]/{patientId}")]
+    public async Task<IActionResult> Update(Guid patientId, [FromBody] PatientUpdateDto updateDto)
     {
-        return Ok(await serviceUow.PatientService!.Update(patientRequestDto));
+        return Ok(await serviceUow.PatientService!.Update(patientId, updateDto));
     }
 
     [Authorize("Bearer")]
-    [HttpDelete("[action]")]
-    public async Task<IActionResult> Delete(string cpf)
+    [HttpDelete("[action]{patientId}")]
+    public async Task<IActionResult> Delete(Guid patientId)
     {
-        await serviceUow.PatientService!.Delete(cpf);
+        await serviceUow.PatientService!.Delete(patientId);
         return NoContent();
+    }
+
+    [Authorize("Bearer")]
+    [HttpGet("{patientId}")]
+    public async Task<IActionResult> Patient(Guid patientId)
+    {
+        return Ok(await serviceUow.PatientService!.GetPatient(patientId));
+    }
+
+    [Authorize("Bearer")]
+    [HttpGet("[action]")]
+    public async Task<IActionResult> All([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    {
+        return Ok(await serviceUow.PatientService!.Patients(pageNumber, pageSize));
     }
 }

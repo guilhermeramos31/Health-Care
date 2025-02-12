@@ -6,7 +6,8 @@ namespace HealthCare.Services.Interfaces;
 public interface IPatientService
 {
     Task<PatientResponseDto> Create(PatientRequestDto newPatient);
-    Task<PatientResponseDto> Update(PatientRequestDto patient);
-    Task<PatientResponseDto> GetPatient(string id);
-    Task Delete(string cpf);
+    Task<PatientResponseDto> Update(Guid id, PatientUpdateDto updatePatient);
+    Task<PatientResponseDto> GetPatient(Guid id);
+    Task Delete(Guid patientId);
+    Task<PatientPageResult> Patients(int page, int pageSize);
 }

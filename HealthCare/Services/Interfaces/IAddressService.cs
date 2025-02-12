@@ -6,5 +6,6 @@ namespace HealthCare.Services.Interfaces;
 public interface IAddressService
 {
     Task<AddressDto> Add(AddressDto address);
-    Address Update(AddressDto address);
+    Task<Address> Update(Guid addressId, AddressDto updateAddress);
+    Task Delete(Guid addressId);
 }

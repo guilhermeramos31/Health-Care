@@ -13,8 +13,24 @@ public class AddressService(IRepositoryUow repositoryUow, IMapper mapper) : IAdd
         return mapper.Map<AddressDto>(await repositoryUow.AddressRepository.Create(mapper.Map<Address>(address)));
     }
 
-    public Address Update(AddressDto address)
+    public async Task<Address> Update(Guid addressId, AddressDto updateAddress)
     {
-        return repositoryUow.AddressRepository.Update(mapper.Map<Address>(address));
+        var address = await repositoryUow.AddressRepository.GetAddress(addressId);
+        if (address == null) throw new NullReferenceException("Address not found");
+        address = mapper.Map(updateAddress, address);
+
+        var addressUpdate = repositoryUow.AddressRepository.Update(mapper.Map<Address>(address));
+        await repositoryUow.CommitAsync();
+
+        return addressUpdate;
+    }
+
+    public async Task Delete(Guid addressId)
+    {
+        var addressToDelete = await repositoryUow.AddressRepository.GetAddress(addressId);
+        if (addressToDelete == null) throw new NullReferenceException("Address not found");
+        repositoryUow.AddressRepository.Delete(addressToDelete);
+
+        await repositoryUow.CommitAsync();
     }
 }

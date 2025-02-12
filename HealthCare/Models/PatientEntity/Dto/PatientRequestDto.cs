@@ -9,19 +9,19 @@ namespace HealthCare.Models.PatientEntity.Dto;
 public class PatientRequestDto
 {
     [Required]
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
     [Required]
-    public string Nationality { get; set; } = string.Empty;
+    public string Nationality { get; init; } = string.Empty;
     [Required]
-    public MaritalStatus MaritalStatus { get; set; }
+    public MaritalStatus MaritalStatus { get; init; }
     [Required]
-    public string Cns { get; set; } = string.Empty;
+    public string Cns { get; init; } = string.Empty;
     [Required]
-    public string Rg { get; set; } = string.Empty;
+    public string Rg { get; init; } = string.Empty;
     [Required]
-    public string Cpf { get; set; } = string.Empty;
+    public string Cpf { get; init; } = string.Empty;
     [Required]
-    public DateTime DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; init; }
     [Required]
-    public AddressDto Address { get; set; } = new();
+    public AddressDto Address { get; init; } = new();
 }

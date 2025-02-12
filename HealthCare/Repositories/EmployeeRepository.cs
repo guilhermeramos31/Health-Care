@@ -1,35 +1,33 @@
-﻿using HealthCare.Context;
-using HealthCare.Models.EntityEmployee;
+﻿using HealthCare.Infrastructure.Data.Context;
+using HealthCare.Models.EmployeeEntity;
 using HealthCare.Repositories.Interfaces;
 
 namespace HealthCare.Repositories;
 
-public class EmployeeRepository( HeathCareContext context ) : IEmployeeRepository
+public class EmployeeRepository(HealthCareContext dbContext) : IEmployeeRepository
 {
-    private readonly HeathCareContext _context = context;
-
-    public async Task<Employee> CreateAsync( Employee employee )
+    public async Task<Employee> CreateAsync(Employee employee)
     {
-        var entityEmployee = await _context.Users.AddAsync( employee );
+        var entityEmployee = await dbContext.Users.AddAsync(employee);
         return entityEmployee.Entity;
     }
 
-    public Task<Employee> GetByEmailAsync( string email )
+    public Task<Employee> GetByEmailAsync(string email)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Employee> GetByIdAsync( string id )
+    public async Task<Employee?> GetByIdAsync(string id)
+    {
+        return await dbContext.FindAsync<Employee>(id);
+    }
+
+    public Task<Employee> GetByUserNameAsync(string userName)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Employee> GetByUserNameAsync( string userName )
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Employee> GetByUserNameOrEmailAsync( string userNameOrEmail )
+    public Task<Employee> GetByUserNameOrEmailAsync(string userNameOrEmail)
     {
         throw new NotImplementedException();
     }

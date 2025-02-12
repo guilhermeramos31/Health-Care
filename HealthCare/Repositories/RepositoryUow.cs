@@ -1,24 +1,23 @@
-﻿using HealthCare.Context;
+﻿using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HealthCare.Repositories;
 
-public class RepositoryUow( HeathCareContext context ) : IRepositoryUow
+public class RepositoryUow(HealthCareContext dbContext) : IRepositoryUow
 {
-    private IDbContextTransaction? _transaction = null;
-    private readonly HeathCareContext _context = context;
+    private IDbContextTransaction? _transaction;
+    private IEmployeeRepository? _employeeRepository;
+    private IAddressRepository? _addressRepository;
+    private IPatientRepository? _patientRepository;
+    private IProfessionalPatientRepository? _professionalPatient;
 
-    private IEmployeeRepository? _employeeRepository = null;
+    public IEmployeeRepository EmployeeRepository => _employeeRepository ??= new EmployeeRepository(dbContext);
+    public IAddressRepository AddressRepository => _addressRepository ??= new AddressRepository(dbContext);
+    public IPatientRepository PatientRepository => _patientRepository ??= new PatientRepository(dbContext);
 
-    public IEmployeeRepository EmployeeRepository
-    {
-        get
-        {
-            _employeeRepository ??= new EmployeeRepository( _context );
-            return _employeeRepository;
-        }
-    }
+    public IProfessionalPatientRepository ProfessionalPatientRepository =>
+        _professionalPatient ??= new ProfessionalPatientRepository(dbContext);
 
     public void Dispose()
     {
@@ -35,13 +34,13 @@ public class RepositoryUow( HeathCareContext context ) : IRepositoryUow
 
     public void Commit()
     {
-        _context.SaveChanges();
+        dbContext.SaveChanges();
         _transaction?.Commit();
     }
 
     public async Task CommitAsync()
     {
-        await _context.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
         if (_transaction != null)
         {
             await _transaction.CommitAsync();
@@ -63,11 +62,11 @@ public class RepositoryUow( HeathCareContext context ) : IRepositoryUow
 
     public void BeginTransaction()
     {
-        _transaction = _context.Database.BeginTransaction();
+        _transaction = dbContext.Database.BeginTransaction();
     }
 
     public async Task BeginTransactionAsync()
     {
-        _transaction = await _context.Database.BeginTransactionAsync();
+        _transaction = await dbContext.Database.BeginTransactionAsync();
     }
 }

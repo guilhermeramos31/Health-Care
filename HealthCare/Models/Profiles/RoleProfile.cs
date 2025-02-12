@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using HealthCare.Models.EntityRole.DTO;
+using HealthCare.Models.RoleEntity;
+using HealthCare.Models.RoleEntity.DTO;
 
 namespace HealthCare.Models.Profiles;
 
@@ -7,7 +8,7 @@ public class RoleProfile : Profile
 {
     public RoleProfile()
     {
-        CreateMap<EntityRole.Role, RoleRequest>().ReverseMap();
-        CreateMap<EntityRole.Role, RoleResponse>().ReverseMap();
+        CreateMap<Role, RoleRequest>().ReverseMap();
+        CreateMap<Role, RoleResponse>().ReverseMap();
     }
 }

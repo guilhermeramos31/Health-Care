@@ -31,7 +31,7 @@ public class MedicationRepository(HealthCareContext dbContext) : IMedicationRepo
 
     public Task<List<Medication>> GetAllMedications(Guid patientId, int? pageSize, int? pageNumber)
     {
-        var query = dbContext.Medications.Where(x => x.Id == patientId);
+        var query = dbContext.Medications.Where(x => x.PatientId == patientId);
         if (pageSize.HasValue && pageNumber.HasValue && pageSize.Value > 0 && pageNumber > 0)
         {
             query = query.Skip((pageNumber.Value - 1) * pageSize.Value)

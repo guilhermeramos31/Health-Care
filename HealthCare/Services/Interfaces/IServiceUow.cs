@@ -9,4 +9,5 @@ public interface IServiceUow
     IRoleService? RoleService { get; }
     ITokenService? TokenService { get; }
     IHealthSituationService? HealthSituationService { get; }
+    IMedicationService? MedicationService { get; }
 }

@@ -8,6 +8,7 @@ public interface IRepositoryUow
     IHealthSituationsRepository HealthSituationsRepository { get; }
 
     IProfessionalPatientRepository ProfessionalPatientRepository { get; }
+    IMedicationRepository MedicationRepository { get; }
 
     void Commit();
     Task CommitAsync();

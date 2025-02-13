@@ -2,11 +2,13 @@
 using HealthCare.Models.AddressEntity;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Models.HealthSituationEntity;
+using HealthCare.Models.MedicationEntity;
 using HealthCare.Models.PatientEntity;
 using HealthCare.Models.ProfessionalPatientEntity;
 using HealthCare.Models.RoleEntity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Medication = HealthCare.Models.MedicationEntity.Medication;
 
 namespace HealthCare.Infrastructure.Data.Context;
 
@@ -18,6 +20,7 @@ public class HealthCareContext(DbContextOptions<HealthCareContext> options)
 
     public DbSet<ProfessionalPatient> ProfessionalPatients { get; set; }
     public DbSet<HealthSituation> HealthSituation { get; set; }
+    public DbSet<Medication> Medications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -42,5 +45,10 @@ public class HealthCareContext(DbContextOptions<HealthCareContext> options)
             .HasOne(hs => hs.Patient)
             .WithMany(p => p.HealthSituations)
             .HasForeignKey(hs => hs.PatientId);
+
+        builder.Entity<Medication>()
+            .HasOne(m => m.Patient)
+            .WithMany(p => p.Medications)
+            .HasForeignKey(m => m.PatientId);
     }
 }

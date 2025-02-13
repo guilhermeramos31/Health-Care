@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using HealthCare.Models.AddressEntity;
-using HealthCare.Models.AddressEntity.Dto;
 using HealthCare.Models.PatientEntity;
 using HealthCare.Models.PatientEntity.Dto;
 
@@ -10,8 +8,7 @@ public class PatientProfile : Profile
 {
     public PatientProfile()
     {
-        CreateMap<Patient, PatientResponseDto>().ReverseMap();
-        CreateMap<Patient, PatientRequestDto>().ReverseMap();
-        CreateMap<Address, AddressDto>().ReverseMap();
+        CreateMap<Patient, PatientResponseDto>().ReverseMap().PreserveReferences();
+        CreateMap<Patient, PatientRequestDto>().ReverseMap().PreserveReferences();
     }
 }

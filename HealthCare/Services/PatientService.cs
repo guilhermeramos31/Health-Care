@@ -55,8 +55,13 @@ public class PatientService(
 
     public async Task<PatientResponseDto> GetPatient(Guid id)
     {
-        return mapper.Map<PatientResponseDto>(await repositoryUow.PatientRepository.GetPatient(id) ??
-                                              throw new BadHttpRequestException("Patient not found."));
+        return mapper.Map<PatientResponseDto>(await GetPatientEntity(id));
+    }
+
+    public async Task<Patient> GetPatientEntity(Guid id, bool asNoTracking = false)
+    {
+        return await repositoryUow.PatientRepository.GetPatient(id) ??
+               throw new BadHttpRequestException("Patient not found.");
     }
 
     public async Task Delete(Guid patientId)

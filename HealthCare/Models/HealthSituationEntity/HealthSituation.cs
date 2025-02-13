@@ -12,6 +12,6 @@ public class HealthSituation : BaseEntity
     public string Comorbidities { get; init; } = string.Empty;
     public string Historic { get; init; } = string.Empty;
 
-    public Guid PatientId { get; init; }
-    public Patient Patient { get; init; }
+    public Guid PatientId { get; set; }
+    public Patient Patient { get; set; }
 }

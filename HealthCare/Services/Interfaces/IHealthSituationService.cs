@@ -4,7 +4,7 @@ namespace HealthCare.Services.Interfaces;
 
 public interface IHealthSituationService
 {
-    Task<HealthSituationResponse> Create(HealthSituationRequest request);
+    Task<HealthSituationResponse> Create(Guid patientId, HealthSituationRequest request);
     Task<HealthSituationResponse> Update(Guid healthSituationId, HealthSituationRequest request);
     Task Delete(Guid id);
     Task<HealthSituationResponse> GetHealthSituationById(Guid id);

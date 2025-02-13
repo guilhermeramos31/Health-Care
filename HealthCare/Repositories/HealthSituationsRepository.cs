@@ -9,29 +9,29 @@ public class HealthSituationsRepository(HealthCareContext dbContext) : IHealthSi
 {
     public async Task<HealthSituation> Create(HealthSituation healthSituation)
     {
-        var newHealthSituation = await dbContext.HealthSituations.AddAsync(healthSituation);
+        var newHealthSituation = await dbContext.HealthSituation.AddAsync(healthSituation);
         return newHealthSituation.Entity;
     }
 
     public HealthSituation Update(HealthSituation healthSituation)
     {
-        var updateHealthSituation = dbContext.HealthSituations.Update(healthSituation);
+        var updateHealthSituation = dbContext.HealthSituation.Update(healthSituation);
         return updateHealthSituation.Entity;
     }
 
     public void Delete(HealthSituation healthSituation)
     {
-        dbContext.HealthSituations.Remove(healthSituation);
+        dbContext.HealthSituation.Remove(healthSituation);
     }
 
     public async Task<HealthSituation?> GetHealthSituationById(Guid healthSituationId)
     {
-        return await dbContext.HealthSituations.FindAsync(healthSituationId);
+        return await dbContext.HealthSituation.FindAsync(healthSituationId);
     }
 
     public Task<List<HealthSituation>> GetAllHealthSituations(Guid patientId, int? pageSize, int? pageNumber)
     {
-        var healthSituation = dbContext.HealthSituations.Where(hs => hs.PatientId == patientId);
+        var healthSituation = dbContext.HealthSituation.Where(hs => hs.PatientId == patientId);
         if (pageSize.HasValue && pageNumber.HasValue && pageSize.Value > 0 && pageNumber > 0)
         {
             healthSituation = healthSituation.Skip((pageNumber.Value - 1) * pageSize.Value)

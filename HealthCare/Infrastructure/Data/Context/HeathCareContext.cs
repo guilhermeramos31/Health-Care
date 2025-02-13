@@ -17,7 +17,7 @@ public class HealthCareContext(DbContextOptions<HealthCareContext> options)
     public DbSet<Address> Addresses { get; set; }
 
     public DbSet<ProfessionalPatient> ProfessionalPatients { get; set; }
-    public DbSet<HealthSituation> HealthSituations { get; set; }
+    public DbSet<HealthSituation> HealthSituation { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -24,7 +24,7 @@ public class HealthSituationsRepository(HealthCareContext dbContext) : IHealthSi
         dbContext.HealthSituations.Remove(healthSituation);
     }
 
-    public async Task<HealthSituation?> GetHealthSituationById(int healthSituationId)
+    public async Task<HealthSituation?> GetHealthSituationById(Guid healthSituationId)
     {
         return await dbContext.HealthSituations.FindAsync(healthSituationId);
     }

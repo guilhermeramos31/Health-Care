@@ -7,6 +7,6 @@ public interface IHealthSituationsRepository
     Task<HealthSituation> Create(HealthSituation healthSituation);
     HealthSituation Update(HealthSituation healthSituation);
     void Delete(HealthSituation healthSituation);
-    Task<HealthSituation?> GetHealthSituationById(int healthSituationId);
+    Task<HealthSituation?> GetHealthSituationById(Guid healthSituationId);
     Task<List<HealthSituation>> GetAllHealthSituations(Guid patientId, int? pageSize, int? pageNumber);
 }

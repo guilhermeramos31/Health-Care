@@ -1,5 +1,7 @@
-﻿using HealthCare.Models.AddressEntity;
+﻿using HealthCare.Migrations;
+using HealthCare.Models.AddressEntity;
 using HealthCare.Models.EmployeeEntity;
+using HealthCare.Models.HealthSituationEntity;
 using HealthCare.Models.PatientEntity;
 using HealthCare.Models.ProfessionalPatientEntity;
 using HealthCare.Models.RoleEntity;
@@ -15,6 +17,7 @@ public class HealthCareContext(DbContextOptions<HealthCareContext> options)
     public DbSet<Address> Addresses { get; set; }
 
     public DbSet<ProfessionalPatient> ProfessionalPatients { get; set; }
+    public DbSet<HealthSituation> HealthSituations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -34,5 +37,10 @@ public class HealthCareContext(DbContextOptions<HealthCareContext> options)
             .HasOne(p => p.Address)
             .WithMany(a => a.Patient)
             .HasForeignKey(p => p.AddressId);
+
+        builder.Entity<HealthSituation>()
+            .HasOne(hs => hs.Patient)
+            .WithMany(p => p.HealthSituations)
+            .HasForeignKey(hs => hs.PatientId);
     }
 }

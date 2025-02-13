@@ -2,6 +2,7 @@
 using HealthCare.Models.Base;
 using HealthCare.Models.Enums;
 using HealthCare.Models.HealthSituationEntity;
+using HealthCare.Models.MedicationEntity;
 using HealthCare.Models.ProfessionalPatientEntity;
 
 namespace HealthCare.Models.PatientEntity;
@@ -21,4 +22,5 @@ public class Patient : BaseEntity
     public Address Address { get; set; } = new();
     public IList<ProfessionalPatient> ProfessionalPatients { get; init; } = new List<ProfessionalPatient>();
     public IList<HealthSituation> HealthSituations { get; init; } = new List<HealthSituation>();
+    public IList<Medication> Medications { get; init; } = new List<Medication>();
 }

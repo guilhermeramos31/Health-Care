@@ -24,6 +24,7 @@ public class ServiceUow(
     private ITokenService? _tokenService;
     private IProfessionalPatientService? _professionalPatientService;
     private IHealthSituationService? _healthSituationService;
+    private IMedicationService? _medicationService;
 
     public IAddressService AddressService => _addressService ??= new AddressService(repositoryUow, mapper);
     public IEmployeeRoleService EmployeeRoleService => _employeeRoleService ??= new EmployeeRoleService(managerUow);
@@ -44,4 +45,7 @@ public class ServiceUow(
 
     public IRoleService RoleService => _roleService ??= new RoleService(managerUow, mapper);
     public ITokenService TokenService => _tokenService ??= new TokenService(managerUow, accessor, jwt, jwtOptions);
+
+    public IMedicationService MedicationService =>
+        _medicationService ??= new MedicationService(mapper, repositoryUow, PatientService);
 }

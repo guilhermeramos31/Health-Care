@@ -25,10 +25,15 @@ public class PatientRepository(HealthCareContext dbContext) : IPatientRepository
         return patient;
     }
 
-    public async Task<Patient?> GetPatient(Guid id)
+    public async Task<Patient?> GetPatient(Guid id, bool asNoTracking = false)
     {
-        var patient = await dbContext.Patients.FirstOrDefaultAsync(p => p.Id == id);
-        return patient;
+        var patient = dbContext.Patients.AsQueryable();
+        if (asNoTracking)
+        {
+            patient = patient.AsNoTracking();
+        }
+
+        return await patient.FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public void Delete(Patient patient)

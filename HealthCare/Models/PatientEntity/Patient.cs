@@ -1,22 +1,24 @@
 ﻿using HealthCare.Models.AddressEntity;
 using HealthCare.Models.Base;
 using HealthCare.Models.Enums;
+using HealthCare.Models.HealthSituationEntity;
 using HealthCare.Models.ProfessionalPatientEntity;
 
 namespace HealthCare.Models.PatientEntity;
 
 public class Patient : BaseEntity
 {
-    public string Name { get; set; } = string.Empty;
-    public string Nationality { get; set; } = string.Empty;
-    public MaritalStatus MaritalStatus { get; set; }
-    public string Cns { get; set; } = string.Empty;
-    public string Rg { get; set; } = string.Empty;
-    public string Cpf { get; set; } = string.Empty;
-    public DateTime DateOfBirth { get; set; }
-    public DateTime AdmissionDate { get; set; }
+    public string Name { get; init; } = string.Empty;
+    public string Nationality { get; init; } = string.Empty;
+    public MaritalStatus MaritalStatus { get; init; }
+    public string Cns { get; init; } = string.Empty;
+    public string Rg { get; init; } = string.Empty;
+    public string Cpf { get; init; } = string.Empty;
+    public DateTime DateOfBirth { get; init; }
+    public DateTime AdmissionDate { get; init; }
 
-    public Guid AddressId { get; set; }
+    public Guid AddressId { get; init; }
     public Address Address { get; set; } = new();
-    public List<ProfessionalPatient> ProfessionalPatients { get; set; } = new();
+    public IList<ProfessionalPatient> ProfessionalPatients { get; init; } = new List<ProfessionalPatient>();
+    public IList<HealthSituation> HealthSituations { get; init; } = new List<HealthSituation>();
 }

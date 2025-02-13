@@ -11,10 +11,14 @@ public class RepositoryUow(HealthCareContext dbContext) : IRepositoryUow
     private IAddressRepository? _addressRepository;
     private IPatientRepository? _patientRepository;
     private IProfessionalPatientRepository? _professionalPatient;
+    private IHealthSituationsRepository? _healthSituationsRepository;
 
     public IEmployeeRepository EmployeeRepository => _employeeRepository ??= new EmployeeRepository(dbContext);
     public IAddressRepository AddressRepository => _addressRepository ??= new AddressRepository(dbContext);
     public IPatientRepository PatientRepository => _patientRepository ??= new PatientRepository(dbContext);
+
+    public IHealthSituationsRepository HealthSituationsRepository =>
+        _healthSituationsRepository ??= new HealthSituationsRepository(dbContext);
 
     public IProfessionalPatientRepository ProfessionalPatientRepository =>
         _professionalPatient ??= new ProfessionalPatientRepository(dbContext);

@@ -19,7 +19,6 @@ public class AuthController(IServiceUow serviceUow) : ControllerBase
     [HttpGet("[action]")]
     public async Task<IActionResult> RefreshToken(string refreshToken)
     {
-        Console.WriteLine("ok");
         return Ok(await serviceUow.EmployeeService!.RefreshToken(refreshToken));
     }
 }

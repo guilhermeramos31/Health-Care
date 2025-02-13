@@ -24,7 +24,7 @@ public class PatientController(IServiceUow serviceUow) : ControllerBase
     }
 
     [Authorize("Bearer")]
-    [HttpDelete("[action]{patientId}")]
+    [HttpDelete("[action]/{patientId}")]
     public async Task<IActionResult> Delete(Guid patientId)
     {
         await serviceUow.PatientService!.Delete(patientId);

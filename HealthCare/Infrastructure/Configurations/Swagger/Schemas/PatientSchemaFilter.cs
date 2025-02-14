@@ -13,7 +13,7 @@ public class PatientSchemaFilter : ISchemaFilter
         {
             { "cns", new OpenApiString("123456789012345") },
             { "cpf", new OpenApiString("123.456.789-09") },
-            { "dateOfBirth", new OpenApiDate(new DateTime(1980, 1, 1)) },
+            { "dateOfBirth", new OpenApiString(new DateTime(1980, 1, 1).ToString("yyyy-MM-ddTHH:mm:ssZ")) },
             { "maritalStatus", new OpenApiString("Married") },
             { "nationality", new OpenApiString("Brazilian") },
             { "rg", new OpenApiString("12.345.678-9") }

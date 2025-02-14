@@ -40,18 +40,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<HealthCareContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//EF
-builder.Services.AddIdentity<Employee, Role>(employee =>
-    {
-        employee.Password.RequireDigit = false;
-        employee.Password.RequireLowercase = false;
-        employee.Password.RequireUppercase = false;
-        employee.Password.RequireNonAlphanumeric = false;
-    })
-    .AddRoleManager<RoleManager<Role>>()
-    .AddUserManager<UserManager<Employee>>()
-    .AddEntityFrameworkStores<HealthCareContext>()
-    .AddDefaultTokenProviders();
 //Authentication
 builder.Services.AddAuthenticationJwt();
 

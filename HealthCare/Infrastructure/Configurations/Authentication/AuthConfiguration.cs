@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HealthCare.Infrastructure.Data.Context;
+using HealthCare.Models.EmployeeEntity;
+using Microsoft.AspNetCore.Identity;
 using HealthCare.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +13,18 @@ public static class AuthConfiguration
     public static void AddAuthenticationJwt(this IServiceCollection services)
     {
         var jwtSetting = services.BuildServiceProvider().GetRequiredService<IOptions<JwtSetting>>();
+
+        services.AddIdentity<Employee, Models.RoleEntity.Role>(employee =>
+            {
+                employee.Password.RequireDigit = true;
+                employee.Password.RequireLowercase = true;
+                employee.Password.RequireUppercase = true;
+                employee.Password.RequireNonAlphanumeric = true;
+            })
+            .AddRoleManager<RoleManager<Models.RoleEntity.Role>>()
+            .AddUserManager<UserManager<Employee>>()
+            .AddEntityFrameworkStores<HealthCareContext>()
+            .AddDefaultTokenProviders();
 
         services.AddAuthentication(options =>
         {

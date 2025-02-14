@@ -32,7 +32,7 @@ public class EmployeeService(
         if (request == null) throw new ArgumentNullException(nameof(request));
 
         var employee =
-            await managerUow.UserManager.Users.FirstOrDefaultAsync(employee => employee.Email == request.UserName);
+            await managerUow.UserManager.Users.FirstOrDefaultAsync(employee => employee.Email == request.Email);
         if (employee == null) throw new BadHttpRequestException("Invalid username");
 
         var password = await managerUow.UserManager.CheckPasswordAsync(employee, request.Password);

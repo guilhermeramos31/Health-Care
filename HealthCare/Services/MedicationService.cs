@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HealthCare.Models.MedicationEntity;
 using HealthCare.Models.MedicationEntity.Dto;
-using HealthCare.Models.PatientEntity;
 using HealthCare.Repositories.Interfaces;
 using HealthCare.Services.Interfaces;
 

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HealthCare.Models.HealthSituationEntity;
 using HealthCare.Models.HealthSituationEntity.Dto;
-using HealthCare.Models.PatientEntity;
 using HealthCare.Repositories.Interfaces;
 using HealthCare.Services.Interfaces;
 
@@ -12,11 +11,10 @@ public class HealthSituationService(IMapper mapper, IRepositoryUow repositoryUow
 {
     public async Task<HealthSituationResponse> Create(Guid patientId, HealthSituationRequest request)
     {
-        var findPatient = await patientService.GetPatient(patientId);
-        var patient = mapper.Map<Patient>(findPatient);
+        var patient = await patientService.GetPatientEntity(patientId);
         
         var newHealthSituation = mapper.Map<HealthSituation>(request);
-        newHealthSituation.PatientId = patientId;
+        newHealthSituation.PatientId = patient.Id;
         newHealthSituation.Patient = patient;
         newHealthSituation = await repositoryUow.HealthSituationsRepository.Create(newHealthSituation);
         

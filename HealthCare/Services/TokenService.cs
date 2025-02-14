@@ -2,13 +2,11 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text.Json;
 using HealthCare.Infrastructure.Configurations.Authentication;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Utils;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Encoding = System.Text.Encoding;
 
 namespace HealthCare.Services;

@@ -6,9 +6,8 @@ using HealthCare.Models.Profiles;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Models.RoleEntity;
 using HealthCare.Repositories;
-using HealthCare.Configurations.Role;
-using HealthCare.Infrastructure.Configurations.Jwt;
-using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
+using HealthCare.Infrastructure.Configurations.Role;
+using HealthCare.Infrastructure.Configurations.Authentication;
 using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Infrastructure.Managers;
 using HealthCare.Infrastructure.Managers.Interfaces;
@@ -20,8 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers().AddNewtonsoftJson();
 
-builder.Services.Configure<JwtBody>(builder.Configuration.GetSection("JwtSettings"));
-
+builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("JwtSettings"));
 
 //Mappers
 builder.Services.AddAutoMapper(typeof(EmployeeProfile));
@@ -31,7 +29,6 @@ builder.Services.AddScoped<HealthCareContext>();
 builder.Services.AddScoped<IRepositoryUow, RepositoryUow>();
 builder.Services.AddScoped<IManagerUow, ManagerUow>();
 builder.Services.AddScoped<IServiceUow, ServiceUow>();
-builder.Services.AddScoped<IJwt, Jwt>();
 builder.Services.AddHttpContextAccessor();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -54,10 +51,8 @@ builder.Services.AddIdentity<Employee, Role>(employee =>
     .AddUserManager<UserManager<Employee>>()
     .AddEntityFrameworkStores<HealthCareContext>()
     .AddDefaultTokenProviders();
-
 //Authentication
-await builder.Services.AddAuthenticationJwt();
-builder.Configuration.GetSection("JwtSettings").Get<JwtBody>();
+builder.Services.AddAuthenticationJwt();
 
 builder.Services.AddSwaggerGen(options =>
 {

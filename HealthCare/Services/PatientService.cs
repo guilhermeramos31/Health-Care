@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HealthCare.Infrastructure.Configurations.Jwt;
+using HealthCare.Infrastructure.Configurations.Authentication;
 using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Models.PatientEntity;
 using HealthCare.Models.PatientEntity.Dto;
@@ -16,13 +16,13 @@ public class PatientService(
     IHttpContextAccessor accessor,
     IManagerUow managerUow,
     IProfessionalPatientService professionalPatientService,
-    IOptions<JwtBody> jwtBody,
+    IOptions<JwtSetting> jwtSetting,
     ITokenService tokenService,
     IAddressService addressService) : IPatientService
 {
     public async Task<PatientResponseDto> Create(PatientRequestDto newPatient)
     {
-        var user = await accessor.GetEmployee(jwtBody, tokenService, managerUow);
+        var user = await accessor.GetEmployee(jwtSetting, tokenService, managerUow);
         user = await managerUow.UserManager.FindByIdAsync(Convert.ToString(user.Id) ?? string.Empty) ??
                throw new BadHttpRequestException("User not found.");
 
@@ -77,7 +77,7 @@ public class PatientService(
 
     public async Task<PatientPageResult> Patients(int page, int pageSize)
     {
-        var user = await accessor.GetEmployee(jwtBody, tokenService, managerUow);
+        var user = await accessor.GetEmployee(jwtSetting, tokenService, managerUow);
         user = await managerUow.UserManager.FindByIdAsync(Convert.ToString(user.Id) ?? string.Empty) ??
                throw new BadHttpRequestException("User not found.");
 

@@ -1,4 +1,4 @@
-﻿namespace HealthCare.Models.Enums;
+﻿namespace HealthCare.Models.PatientEntity.Enum;
 
 public enum BrazilianState
 {

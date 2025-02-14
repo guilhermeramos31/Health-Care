@@ -1,6 +1,5 @@
-﻿using HealthCare.Models.AddressEntity;
-using HealthCare.Models.AddressEntity.Dto;
-using HealthCare.Models.Enums;
+﻿using HealthCare.Models.AddressEntity.Dto;
+using HealthCare.Models.PatientEntity.Enum;
 
 namespace HealthCare.Models.PatientEntity.Dto;
 

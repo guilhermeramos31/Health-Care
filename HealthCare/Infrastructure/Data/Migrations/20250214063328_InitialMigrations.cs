@@ -7,11 +7,33 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealthCare.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Street = table.Column<string>(type: "text", nullable: false),
+                    Number = table.Column<string>(type: "text", nullable: false),
+                    Complement = table.Column<string>(type: "text", nullable: true),
+                    Neighborhood = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    State = table.Column<int>(type: "integer", nullable: false),
+                    ZipCode = table.Column<string>(type: "text", nullable: false),
+                    Landmark = table.Column<string>(type: "text", nullable: true),
+                    AddressType = table.Column<string>(type: "text", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -69,12 +91,19 @@ namespace HealthCare.Migrations
                     Cpf = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AdmissionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AddressId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Patients_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,28 +213,76 @@ namespace HealthCare.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Addresses",
+                name: "HealthSituations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Street = table.Column<string>(type: "text", nullable: false),
-                    Number = table.Column<string>(type: "text", nullable: false),
-                    Complement = table.Column<string>(type: "text", nullable: true),
-                    Neighborhood = table.Column<string>(type: "text", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<int>(type: "integer", nullable: false),
-                    ZipCode = table.Column<string>(type: "text", nullable: false),
-                    Landmark = table.Column<string>(type: "text", nullable: true),
-                    AddressType = table.Column<string>(type: "text", nullable: false),
+                    Shortcoming = table.Column<string>(type: "text", nullable: false),
+                    Bedridden = table.Column<bool>(type: "boolean", nullable: false),
+                    WheelchairUser = table.Column<bool>(type: "boolean", nullable: false),
+                    Wanders = table.Column<bool>(type: "boolean", nullable: false),
+                    Comorbidities = table.Column<string>(type: "text", nullable: false),
+                    Historic = table.Column<string>(type: "text", nullable: false),
                     PatientId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.PrimaryKey("PK_HealthSituations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Addresses_Patients_PatientId",
+                        name: "FK_HealthSituations_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Medications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Time = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    Period = table.Column<int>(type: "integer", nullable: false),
+                    Quantity = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    PatientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Medications_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NutritionalAssessments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Cb = table.Column<string>(type: "text", nullable: false),
+                    Aj = table.Column<string>(type: "text", nullable: false),
+                    Cp = table.Column<string>(type: "text", nullable: false),
+                    EstimatedWeight = table.Column<float>(type: "real", nullable: false),
+                    EstimatedStature = table.Column<float>(type: "real", nullable: false),
+                    Imc = table.Column<float>(type: "real", nullable: false),
+                    PatientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NutritionalAssessments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NutritionalAssessments_Patients_PatientId",
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
@@ -238,11 +315,6 @@ namespace HealthCare.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Addresses_PatientId",
-                table: "Addresses",
-                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -282,6 +354,26 @@ namespace HealthCare.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_HealthSituations_PatientId",
+                table: "HealthSituations",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Medications_PatientId",
+                table: "Medications",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NutritionalAssessments_PatientId",
+                table: "NutritionalAssessments",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_AddressId",
+                table: "Patients",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProfessionalPatients_EmployeeId",
                 table: "ProfessionalPatients",
                 column: "EmployeeId");
@@ -295,9 +387,6 @@ namespace HealthCare.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Addresses");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -314,6 +403,15 @@ namespace HealthCare.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "HealthSituations");
+
+            migrationBuilder.DropTable(
+                name: "Medications");
+
+            migrationBuilder.DropTable(
+                name: "NutritionalAssessments");
+
+            migrationBuilder.DropTable(
                 name: "ProfessionalPatients");
 
             migrationBuilder.DropTable(
@@ -324,6 +422,9 @@ namespace HealthCare.Migrations
 
             migrationBuilder.DropTable(
                 name: "Patients");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
         }
     }
 }

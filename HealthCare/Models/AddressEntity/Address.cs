@@ -1,6 +1,6 @@
 ﻿using HealthCare.Models.Base;
-using HealthCare.Models.Enums;
 using HealthCare.Models.PatientEntity;
+using HealthCare.Models.PatientEntity.Enum;
 
 namespace HealthCare.Models.AddressEntity;
 

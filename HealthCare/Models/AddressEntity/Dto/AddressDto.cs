@@ -1,4 +1,4 @@
-﻿using HealthCare.Models.Enums;
+﻿using HealthCare.Models.PatientEntity.Enum;
 using Microsoft.Build.Framework;
 
 namespace HealthCare.Models.AddressEntity.Dto;

@@ -1,7 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using HealthCare.Models.AddressEntity;
-using HealthCare.Models.AddressEntity.Dto;
-using HealthCare.Models.Enums;
+﻿using HealthCare.Models.AddressEntity.Dto;
+using HealthCare.Models.PatientEntity.Enum;
 using Microsoft.Build.Framework;
 
 namespace HealthCare.Models.PatientEntity.Dto;

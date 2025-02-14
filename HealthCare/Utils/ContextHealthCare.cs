@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
-using HealthCare.Infrastructure.Configurations.Jwt;
-using HealthCare.Infrastructure.Managers;
+using HealthCare.Infrastructure.Configurations.Authentication;
 using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Services.Interfaces;
@@ -23,7 +22,7 @@ public static class ContextHealthCare
         return token;
     }
 
-    public static async Task<Employee> GetEmployee(this IHttpContextAccessor accessor, IOptions<JwtBody> jwtSetting,
+    public static async Task<Employee> GetEmployee(this IHttpContextAccessor accessor, IOptions<JwtSetting> jwtSetting,
         ITokenService tokenService, IManagerUow uowManager)
     {
         var token = accessor.GetToken();
@@ -38,5 +37,11 @@ public static class ContextHealthCare
         if (userById == null) throw new BadHttpRequestException("User not found");
 
         return userById;
+    }
+
+    public static T GetSettings<T>(this IConfiguration configuration, string settingsKey)
+    {
+        return configuration.GetRequiredSection(settingsKey).Get<T>()
+               ?? throw new InvalidOperationException("Settings are not configured.");
     }
 }

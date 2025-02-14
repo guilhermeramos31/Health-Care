@@ -1,9 +1,9 @@
 ﻿using HealthCare.Models.AddressEntity;
 using HealthCare.Models.Base;
-using HealthCare.Models.Enums;
 using HealthCare.Models.HealthSituationEntity;
 using HealthCare.Models.MedicationEntity;
 using HealthCare.Models.NutritionalAssessmentEntity;
+using HealthCare.Models.PatientEntity.Enum;
 using HealthCare.Models.ProfessionalPatientEntity;
 
 namespace HealthCare.Models.PatientEntity;

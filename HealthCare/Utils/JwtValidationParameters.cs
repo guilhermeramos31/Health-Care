@@ -1,4 +1,6 @@
-﻿using HealthCare.Infrastructure.Configurations.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using HealthCare.Infrastructure.Configurations.Authentication;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -6,7 +8,7 @@ namespace HealthCare.Utils;
 
 public static class JwtValidationParameters
 {
-    public static TokenValidationParameters TokenValidationParams(this IOptions<JwtBody> options)
+    public static TokenValidationParameters TokenValidationParams(this IOptions<JwtSetting> options)
     {
         return new TokenValidationParameters
         {
@@ -16,6 +18,8 @@ public static class JwtValidationParameters
             ValidAudience = options.Value.Audience,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
+            RoleClaimType = ClaimTypes.Role,
+            NameClaimType = JwtRegisteredClaimNames.Sub,
             IssuerSigningKey = Encoding.SymmetricSecurityKey(options.Value.SecretKey)
         };
     }

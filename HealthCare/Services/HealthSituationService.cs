@@ -12,7 +12,7 @@ public class HealthSituationService(IMapper mapper, IRepositoryUow repositoryUow
 {
     public async Task<HealthSituationResponse> Create(Guid patientId, HealthSituationRequest request)
     {
-        var findPatient = await repositoryUow.PatientRepository.GetPatient(patientId);
+        var findPatient = await patientService.GetPatient(patientId);
         var patient = mapper.Map<Patient>(findPatient);
         
         var newHealthSituation = mapper.Map<HealthSituation>(request);

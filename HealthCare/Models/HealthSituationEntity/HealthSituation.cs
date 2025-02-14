@@ -13,5 +13,5 @@ public class HealthSituation : BaseEntity
     public string Historic { get; init; } = string.Empty;
 
     public Guid PatientId { get; set; }
-    public Patient Patient { get; set; }
+    public Patient Patient { get; set; } = null!;
 }

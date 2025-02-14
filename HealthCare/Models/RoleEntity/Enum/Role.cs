@@ -4,6 +4,5 @@ public enum Role
 {
     Admin,
     Doctor,
-    Nurse,
-    Patient
+    Nutritionist
 }

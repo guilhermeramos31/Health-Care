@@ -1,4 +1,4 @@
-﻿using HealthCare.Infrastructure.Configurations.Jwt;
+﻿using HealthCare.Infrastructure.Configurations.Authentication;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -6,7 +6,7 @@ namespace HealthCare.Utils;
 
 public static class JwtValidationParameters
 {
-    public static TokenValidationParameters TokenValidationParams(this IOptions<JwtBody> options)
+    public static TokenValidationParameters TokenValidationParams(this IOptions<JwtSetting> options)
     {
         return new TokenValidationParameters
         {

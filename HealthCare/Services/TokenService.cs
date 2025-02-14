@@ -3,9 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
-using HealthCare.Infrastructure.Configurations.Jwt;
+using HealthCare.Infrastructure.Configurations.Authentication;
 using HealthCare.Models.EmployeeEntity;
-using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
 using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Utils;
 using Microsoft.Extensions.Options;
@@ -16,14 +15,11 @@ namespace HealthCare.Services;
 public class TokenService(
     IManagerUow managerUow,
     IHttpContextAccessor accessor,
-    IJwt jwt,
-    IOptions<JwtBody> jwtOptions)
+    IOptions<JwtSetting> jwtSetting)
     : ITokenService
 {
     public async Task<string> GenerateAccessToken(Employee employee)
     {
-        var jwtBody = await jwt.GetBody();
-
         var employeeRoles = await managerUow.UserManager.GetRolesAsync(employee);
 
         var rolesNames = new List<string>();
@@ -32,8 +28,8 @@ public class TokenService(
             rolesNames.Add(role ?? throw new ArgumentNullException(nameof(role)));
         }
 
-        var audience = jwtBody.Audience;
-        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBody.SecretKey));
+        var audience = jwtSetting.Value.Audience;
+        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.Value.SecretKey));
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>
@@ -44,7 +40,7 @@ public class TokenService(
             new("role", JsonSerializer.Serialize(rolesNames)),
         };
 
-        var context = ContextHealthCare.Get(accessor);
+        var context = accessor.Get();
 
         var token = new JwtSecurityToken(
             issuer: context.Request.Headers.Origin,
@@ -59,14 +55,13 @@ public class TokenService(
 
     public async Task<string> GenerateRefreshToken()
     {
-        var jwtBody = await jwt.GetBody();
-        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBody.SecretKey));
+        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.Value.SecretKey));
 
         var context = accessor.Get();
 
         var token = new JwtSecurityToken(
             context.Request.Headers.Origin,
-            jwtBody.Audience,
+            jwtSetting.Value.Audience,
             expires: DateTime.Now.AddMinutes(1440),
             signingCredentials: new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256)
         );
@@ -76,11 +71,9 @@ public class TokenService(
 
     public async Task CreateUserToken(Employee employee, string token)
     {
-        var jwtBody = await jwt.GetBody();
-
         var user = await managerUow.UserManager.SetAuthenticationTokenAsync(
             employee,
-            jwtBody.Audience,
+            jwtSetting.Value.Audience,
             "RefreshToken",
             token
         );
@@ -96,7 +89,7 @@ public class TokenService(
         var token = accessor.GetToken();
         if (token == null) throw new BadHttpRequestException("Failed to get user token.");
 
-        var validateParameters = jwtOptions.TokenValidationParams();
+        var validateParameters = jwtSetting.TokenValidationParams();
         return await Task.Run(() =>
         {
             var handler = new JwtSecurityTokenHandler();

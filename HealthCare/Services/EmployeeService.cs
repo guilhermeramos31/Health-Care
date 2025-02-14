@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HealthCare.Infrastructure.Configurations.Jwt.Interfaces;
 using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Models.EmployeeEntity;
 using HealthCare.Models.EmployeeEntity.DTO;
@@ -12,8 +11,7 @@ public class EmployeeService(
     IMapper mapper,
     ITokenService tokenService,
     IManagerUow managerUow,
-    IEmployeeRoleService employeeRoleService,
-    IJwt jwt)
+    IEmployeeRoleService employeeRoleService)
     : IEmployeeService
 {
     public async Task<EmployeeResponse> CreateAsync(EmployeeRequest? request)
@@ -56,11 +54,8 @@ public class EmployeeService(
         var principal = await tokenService.GetPrincipalFromExpiredToken();
         var subject = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-        var jwtBody = await jwt.GetBody();
         var user = await managerUow.UserManager.FindByIdAsync(subject) ??
                    throw new BadHttpRequestException("User not found!");
-
-        var userToken = await managerUow.UserManager.GetAuthenticationTokenAsync(user, jwtBody.Audience, refreshToken);
 
         var newRefreshToken = await tokenService.GenerateRefreshToken();
         await tokenService.CreateUserToken(user, newRefreshToken);

@@ -40,7 +40,8 @@ public class HealthCareContext(DbContextOptions<HealthCareContext> options)
         builder.Entity<Patient>()
             .HasOne(p => p.Address)
             .WithMany(a => a.Patient)
-            .HasForeignKey(p => p.AddressId);
+            .HasForeignKey(p => p.AddressId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<HealthSituation>()
             .HasOne(hs => hs.Patient)

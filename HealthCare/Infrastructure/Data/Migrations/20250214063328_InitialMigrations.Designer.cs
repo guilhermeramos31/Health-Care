@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealthCare.Migrations
 {
     [DbContext(typeof(HealthCareContext))]
-    [Migration("20250207024231_ManyToOne")]
-    partial class ManyToOne
+    [Migration("20250214063328_InitialMigrations")]
+    partial class InitialMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -156,6 +156,132 @@ namespace HealthCare.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("HealthCare.Models.HealthSituationEntity.HealthSituation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Bedridden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Comorbidities")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Historic")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Shortcoming")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Wanders")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("WheelchairUser")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("HealthSituations");
+                });
+
+            modelBuilder.Entity("HealthCare.Models.MedicationEntity.Medication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Period")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Quantity")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<TimeSpan>("Time")
+                        .HasColumnType("interval");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Medications");
+                });
+
+            modelBuilder.Entity("HealthCare.Models.NutritionalAssessmentEntity.NutritionalAssessment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Aj")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cb")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cp")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<float>("EstimatedStature")
+                        .HasColumnType("real");
+
+                    b.Property<float>("EstimatedWeight")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Imc")
+                        .HasColumnType("real");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("NutritionalAssessments");
                 });
 
             modelBuilder.Entity("HealthCare.Models.PatientEntity.Patient", b =>
@@ -366,6 +492,39 @@ namespace HealthCare.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("HealthCare.Models.HealthSituationEntity.HealthSituation", b =>
+                {
+                    b.HasOne("HealthCare.Models.PatientEntity.Patient", "Patient")
+                        .WithMany("HealthSituations")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("HealthCare.Models.MedicationEntity.Medication", b =>
+                {
+                    b.HasOne("HealthCare.Models.PatientEntity.Patient", "Patient")
+                        .WithMany("Medications")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("HealthCare.Models.NutritionalAssessmentEntity.NutritionalAssessment", b =>
+                {
+                    b.HasOne("HealthCare.Models.PatientEntity.Patient", "Patient")
+                        .WithMany("NutritionalAssessments")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("HealthCare.Models.PatientEntity.Patient", b =>
                 {
                     b.HasOne("HealthCare.Models.AddressEntity.Address", "Address")
@@ -459,6 +618,12 @@ namespace HealthCare.Migrations
 
             modelBuilder.Entity("HealthCare.Models.PatientEntity.Patient", b =>
                 {
+                    b.Navigation("HealthSituations");
+
+                    b.Navigation("Medications");
+
+                    b.Navigation("NutritionalAssessments");
+
                     b.Navigation("ProfessionalPatients");
                 });
 #pragma warning restore 612, 618

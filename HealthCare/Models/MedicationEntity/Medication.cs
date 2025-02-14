@@ -12,5 +12,5 @@ public class Medication : BaseEntity
     public string Description { get; set; } = string.Empty;
 
     public Guid PatientId { get; set; }
-    public Patient Patient { get; set; }
+    public Patient Patient { get; set; } = null!;
 }

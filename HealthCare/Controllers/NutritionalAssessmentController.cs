@@ -9,14 +9,14 @@ namespace HealthCare.Controllers;
 [Route("[controller]")]
 public class NutritionalAssessmentController(IServiceUow serviceUow) : ControllerBase
 {
-    [Authorize("Bearer")]
+    [Authorize(policy:"Bearer", Roles = "Nutritionist")]
     [HttpPost("[action]/{patientId}")]
     public async Task<IActionResult> Create(Guid patientId, [FromBody] NutritionalAssessmentRequest request)
     {
         return Ok(await serviceUow.NutritionalAssessmentService!.Create(patientId, request));
     }
 
-    [Authorize("Bearer")]
+    [Authorize(policy:"Bearer", Roles = "Nutritionist")]
     [HttpPut("[action]/{patientId}")]
     public async Task<IActionResult> Update(Guid nutritionalAssessmentId,
         [FromBody] NutritionalAssessmentRequest request)
@@ -24,7 +24,7 @@ public class NutritionalAssessmentController(IServiceUow serviceUow) : Controlle
         return Ok(await serviceUow.NutritionalAssessmentService!.Update(nutritionalAssessmentId, request));
     }
 
-    [Authorize("Bearer")]
+    [Authorize(policy:"Bearer", Roles = "Nutritionist")]
     [HttpDelete("[action]/{nutritionalAssessmentId}")]
     public async Task<IActionResult> Delete(Guid nutritionalAssessmentId)
     {

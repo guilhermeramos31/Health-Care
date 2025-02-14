@@ -8,6 +8,7 @@ using HealthCare.Models.EmployeeEntity;
 using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Utils;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Encoding = System.Text.Encoding;
 
 namespace HealthCare.Services;
@@ -22,12 +23,6 @@ public class TokenService(
     {
         var employeeRoles = await managerUow.UserManager.GetRolesAsync(employee);
 
-        var rolesNames = new List<string>();
-        foreach (var role in employeeRoles)
-        {
-            rolesNames.Add(role ?? throw new ArgumentNullException(nameof(role)));
-        }
-
         var audience = jwtSetting.Value.Audience;
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.Value.SecretKey));
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -37,8 +32,14 @@ public class TokenService(
             new(JwtRegisteredClaimNames.Sub, employee.Id.ToString()),
             new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
                 ClaimValueTypes.Integer64),
-            new("role", JsonSerializer.Serialize(rolesNames)),
         };
+        if (employeeRoles.Any())
+        {
+            foreach (var role in employeeRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+        }
 
         var context = accessor.Get();
 

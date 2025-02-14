@@ -10,4 +10,5 @@ public interface IServiceUow
     ITokenService? TokenService { get; }
     IHealthSituationService? HealthSituationService { get; }
     IMedicationService? MedicationService { get; }
+    INutritionalAssessmentService? NutritionalAssessmentService { get; }
 }

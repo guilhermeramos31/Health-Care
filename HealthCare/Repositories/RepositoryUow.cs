@@ -13,6 +13,7 @@ public class RepositoryUow(HealthCareContext dbContext) : IRepositoryUow
     private IProfessionalPatientRepository? _professionalPatient;
     private IHealthSituationsRepository? _healthSituationsRepository;
     private IMedicationRepository? _medicationRepository;
+    private INutritionalAssessmentRepository? _nutritionalAssessmentRepository;
 
     public IEmployeeRepository EmployeeRepository => _employeeRepository ??= new EmployeeRepository(dbContext);
     public IAddressRepository AddressRepository => _addressRepository ??= new AddressRepository(dbContext);
@@ -25,6 +26,10 @@ public class RepositoryUow(HealthCareContext dbContext) : IRepositoryUow
         _professionalPatient ??= new ProfessionalPatientRepository(dbContext);
 
     public IMedicationRepository MedicationRepository => _medicationRepository ??= new MedicationRepository(dbContext);
+
+    public INutritionalAssessmentRepository NutritionalAssessmentRepository =>
+        _nutritionalAssessmentRepository ??= new NutritionalAssessmentRepository(dbContext);
+    
     
     public void Dispose()
     {

@@ -3,6 +3,7 @@ using System;
 using HealthCare.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealthCare.Migrations
 {
     [DbContext(typeof(HealthCareContext))]
-    partial class HealthCareContextModelSnapshot : ModelSnapshot
+    [Migration("20250213220357_NutritionalAssessment")]
+    partial class NutritionalAssessment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,7 +198,7 @@ namespace HealthCare.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("HealthSituations");
+                    b.ToTable("HealthSituation");
                 });
 
             modelBuilder.Entity("HealthCare.Models.MedicationEntity.Medication", b =>
@@ -278,7 +281,7 @@ namespace HealthCare.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("NutritionalAssessments");
+                    b.ToTable("NutritionalAssessment");
                 });
 
             modelBuilder.Entity("HealthCare.Models.PatientEntity.Patient", b =>

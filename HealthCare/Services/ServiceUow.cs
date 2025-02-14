@@ -25,6 +25,7 @@ public class ServiceUow(
     private IProfessionalPatientService? _professionalPatientService;
     private IHealthSituationService? _healthSituationService;
     private IMedicationService? _medicationService;
+    private INutritionalAssessmentService? _nutritionalAssessmentService;
 
     public IAddressService AddressService => _addressService ??= new AddressService(repositoryUow, mapper);
     public IEmployeeRoleService EmployeeRoleService => _employeeRoleService ??= new EmployeeRoleService(managerUow);
@@ -48,4 +49,7 @@ public class ServiceUow(
 
     public IMedicationService MedicationService =>
         _medicationService ??= new MedicationService(mapper, repositoryUow, PatientService);
+
+    public INutritionalAssessmentService NutritionalAssessmentService => _nutritionalAssessmentService ??=
+        new NutritionalAssessmentService(mapper, repositoryUow, PatientService);
 }

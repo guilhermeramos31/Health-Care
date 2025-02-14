@@ -40,7 +40,13 @@ public static class SwaggerConfiguration
                     Description = swaggerSettings.Description
                 });
 
-            options.SchemaFilter<SchemaFilter>();
+            options.SchemaFilter<EmployeeSchemaFilter>();
+            options.SchemaFilter<HealthSituationSchemaFilter>();
+            options.SchemaFilter<MedicationSchemaFilter>();
+            options.SchemaFilter<PatientSchemaFilter>();
+            options.SchemaFilter<NutritionalAssessmentSchemaFilter>();
+            options.SchemaFilter<AddressSchemaFilter>();
+            options.UseInlineDefinitionsForEnums();
         });
     }
 

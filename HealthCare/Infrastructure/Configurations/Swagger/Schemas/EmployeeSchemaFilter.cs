@@ -4,21 +4,27 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace HealthCare.Infrastructure.Configurations.Swagger.Schemas;
 
-public abstract class SchemaFilter : ISchemaFilter
+public class EmployeeSchemaFilter : ISchemaFilter
 {
     public void Apply(OpenApiSchema schema, SchemaFilterContext context)
     {
-        var propertyExamples = new Dictionary<string, IOpenApiAny>
+        var employeeExamples = new Dictionary<string, IOpenApiAny>
         {
             { "userName", new OpenApiString("johndoe") },
             { "name", new OpenApiString("John Doe") },
             { "email", new OpenApiString("john.doe@example.com") },
             { "password", new OpenApiString("SafePassword123@") },
             { "phoneNumber", new OpenApiString("+5511999999999") },
-            { "receiver", new OpenApiString("john.doe@example.com") },
-            { "amount", new OpenApiDouble(10)}
+            { "status", new OpenApiString("Active") },
+            { "observations", new OpenApiString("No issues reported.") },
+            { "role", new OpenApiInteger(0) }
         };
 
+        ApplyExamplesToSchema(schema, employeeExamples);
+    }
+
+    private void ApplyExamplesToSchema(OpenApiSchema schema, Dictionary<string, IOpenApiAny> propertyExamples)
+    {
         foreach (var property in schema.Properties)
         {
             if (propertyExamples.TryGetValue(property.Key, out var example))

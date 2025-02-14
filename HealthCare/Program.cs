@@ -8,13 +8,14 @@ using HealthCare.Models.RoleEntity;
 using HealthCare.Repositories;
 using HealthCare.Infrastructure.Configurations.Role;
 using HealthCare.Infrastructure.Configurations.Authentication;
+using HealthCare.Infrastructure.Configurations.Swagger;
 using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Infrastructure.Managers;
 using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Repositories.Interfaces;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllers().AddNewtonsoftJson();
@@ -54,42 +55,14 @@ builder.Services.AddIdentity<Employee, Role>(employee =>
 //Authentication
 builder.Services.AddAuthenticationJwt();
 
-builder.Services.AddSwaggerGen(options =>
-{
-    var bearer = "Bearer";
-    options.AddSecurityDefinition(bearer, new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = bearer,
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme."
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = bearer
-                }
-            },
-            []
-        }
-    });
-});
+builder.Services.BuildSwagger(configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseCustomSwagger(configuration);
 }
 
 await app.CreateRoles();

@@ -9,7 +9,7 @@ public interface IRepositoryUow
 
     IProfessionalPatientRepository ProfessionalPatientRepository { get; }
     IMedicationRepository MedicationRepository { get; }
-
+    INutritionalAssessmentRepository NutritionalAssessmentRepository { get; }
     void Commit();
     Task CommitAsync();
     void Rollback();

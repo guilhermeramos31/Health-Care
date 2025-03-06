@@ -17,8 +17,18 @@ using HealthCare.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// Add services to the container.
-builder.Services.AddControllers().AddNewtonsoftJson();
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", config =>
+    {
+        config.AllowAnyOrigin()
+            .WithMethods()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+}).AddControllers().AddNewtonsoftJson();
 
 builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("JwtSettings"));
 
@@ -52,6 +62,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseCustomSwagger(configuration);
 }
+
+app.UseCors("AllowAll");
+app.UseRouting();
 
 await app.CreateRoles();
 

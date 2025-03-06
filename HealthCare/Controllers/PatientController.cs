@@ -32,10 +32,10 @@ public class PatientController(IServiceUow serviceUow) : ControllerBase
     }
 
     [Authorize("Bearer")]
-    [HttpGet("{patientId}")]
-    public async Task<IActionResult> Patient(Guid patientId)
+    [HttpGet("{cpfOrCns}")]
+    public async Task<IActionResult> Patient(string cpfOrCns)
     {
-        return Ok(await serviceUow.PatientService!.GetPatient(patientId));
+        return Ok(await serviceUow.PatientService!.Patient(cpfOrCns));
     }
 
     [Authorize("Bearer")]

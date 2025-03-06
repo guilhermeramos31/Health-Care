@@ -12,4 +12,5 @@ public interface IPatientService
     Task<Patient> GetPatientEntity(Guid id, bool asNoTracking = false);
     Task Delete(Guid patientId);
     Task<PatientPageResult> Patients(int page, int pageSize);
+    Task<List<PatientResponseDto>> Patient(string cpfOrCns);
 }

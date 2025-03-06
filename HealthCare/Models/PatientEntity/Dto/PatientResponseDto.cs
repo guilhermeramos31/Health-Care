@@ -8,6 +8,8 @@ public class PatientResponseDto
     public Guid Id { get; init; }
     public string Name { get; init; } = string.Empty;
     public string Nationality { get; init; } = string.Empty;
+    public string Cns { get; init; } = string.Empty;
+    public string Cpf { get; init; } = string.Empty;
     public MaritalStatus MaritalStatus { get; init; }
     public DateTime DateOfBirth { get; init; }
     public DateTime AdmissionDate { get; init; }

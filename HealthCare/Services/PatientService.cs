@@ -89,4 +89,10 @@ public class PatientService(
             TotalCount = patients.Count
         };
     }
+
+    public async Task<List<PatientResponseDto>> Patient(string cpfOrCns)
+    {
+        var patient = await repositoryUow.PatientRepository.FindByCpfOrCns(cpfOrCns);
+        return patient.Select(mapper.Map<PatientResponseDto>).ToList();
+    }
 }

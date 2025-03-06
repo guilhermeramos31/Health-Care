@@ -5,8 +5,8 @@ services:
     image: 'postgres:latest'
     restart: always
     environment:
-      POSTGRES_DB: heathcare
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: jCBZrKWe@1F1NDRb1k56
     ports:
       - "5432:5432"

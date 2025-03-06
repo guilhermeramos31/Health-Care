@@ -19,10 +19,10 @@ public class PatientRepository(HealthCareContext dbContext) : IPatientRepository
         return updatedPatient.Entity;
     }
 
-    public async Task<Patient?> FindByCpf(string cpf)
+    public Task<List<Patient>> FindByCpfOrCns(string search)
     {
-        var patient = await dbContext.Patients.FirstOrDefaultAsync(p => p.Cpf.Equals(cpf));
-        return patient;
+        var patient = dbContext.Patients.Where(p => p.Cpf.Contains(search) || p.Cns.Contains(search) || p.Name.ToLower().Contains(search.ToLower()));
+        return patient.ToListAsync();
     }
 
     public async Task<Patient?> GetPatient(Guid id, bool asNoTracking = false)
@@ -49,7 +49,6 @@ public class PatientRepository(HealthCareContext dbContext) : IPatientRepository
             patients = patients.Skip((pageNumber.Value - 1) * pageSize.Value)
                 .Take(pageSize.Value);
         }
-
 
         patients = patients.Include(patient => patient.Address)
             .OrderByDescending(patient => patient.Name);

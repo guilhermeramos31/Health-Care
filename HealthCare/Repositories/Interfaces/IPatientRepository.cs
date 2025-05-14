@@ -1,5 +1,6 @@
 ﻿using HealthCare.Models.PatientEntity;
-using HealthCare.Models.ProfessionalPatientEntity;
+using HealthCare.Models.PatientEntity.Dto;
+using HealthCare.Models.Query;
 
 namespace HealthCare.Repositories.Interfaces;
 
@@ -10,5 +11,5 @@ public interface IPatientRepository
     Task<List<Patient>> FindByCpfOrCns(string cpf);
     Task<Patient?> GetPatient(Guid id, bool asNoTracking = false);
     void Delete(Patient patient);
-    Task<List<Patient>> GetPatients(Guid userId, int? pageNumber, int? pageSize);
+    Task<PatientPage> GetPatients(Guid userId, QueryParameters queryParameters);
 }

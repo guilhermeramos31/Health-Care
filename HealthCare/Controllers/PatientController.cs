@@ -1,4 +1,5 @@
 ﻿using HealthCare.Models.PatientEntity.Dto;
+using HealthCare.Models.Query;
 using HealthCare.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,8 +41,10 @@ public class PatientController(IServiceUow serviceUow) : ControllerBase
 
     [Authorize("Bearer")]
     [HttpGet("[action]")]
-    public async Task<IActionResult> All([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    public async Task<IActionResult> All([FromQuery] int pageNumber, [FromQuery] int pageSize, [FromQuery] string? search, [FromQuery] Filter filter)
     {
-        return Ok(await serviceUow.PatientService!.Patients(pageNumber, pageSize));
+        var patient = await serviceUow.PatientService!.Patients(pageNumber, pageSize, search, filter);
+        Response.Headers["x-total-count"]= patient.TotalCount.ToString();
+        return Ok(patient.Patients);
     }
 }

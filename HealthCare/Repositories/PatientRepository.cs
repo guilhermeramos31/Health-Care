@@ -1,5 +1,7 @@
 ﻿using HealthCare.Infrastructure.Data.Context;
 using HealthCare.Models.PatientEntity;
+using HealthCare.Models.PatientEntity.Dto;
+using HealthCare.Models.Query;
 using HealthCare.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,18 +43,22 @@ public class PatientRepository(HealthCareContext dbContext) : IPatientRepository
         dbContext.Patients.Remove(patient);
     }
 
-    public Task<List<Patient>> GetPatients(Guid userId, int? pageNumber, int? pageSize)
+    public async Task<PatientPage> GetPatients(Guid userId, QueryParameters parameters)
     {
         var patients = dbContext.Patients.Where(p => p.ProfessionalPatients.Any(pp => pp.EmployeeId == userId));
-        if (pageSize.HasValue && pageNumber.HasValue && pageSize.Value > 0 && pageNumber > 0)
-        {
-            patients = patients.Skip((pageNumber.Value - 1) * pageSize.Value)
-                .Take(pageSize.Value);
-        }
-
+        if (!string.IsNullOrEmpty(parameters.Search)) patients = patients.Where(p => p.Name.ToLower().Contains(parameters.Search.ToLower()));
+        var patientsCount = patients.Count();
+        patients = parameters.Filter == Filter.DESCENDING? patients.OrderByDescending(patient => patient.Name) 
+            : patients.OrderBy(patient => patient.Name);
+        patients = patients.Skip((parameters.PageNumber - 1) * parameters.PageSize).Take(parameters.PageSize);
         patients = patients.Include(patient => patient.Address)
-            .OrderByDescending(patient => patient.Name);
-
-        return patients.ToListAsync();
+            .OrderByDescending(patient => patient.AdmissionDate);
+        
+        return new ()
+        {
+            Patients = await patients.ToListAsync(),
+            TotalCount = patientsCount
+        };
     }
 }
+

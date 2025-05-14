@@ -3,6 +3,7 @@ using HealthCare.Infrastructure.Configurations.Authentication;
 using HealthCare.Infrastructure.Managers.Interfaces;
 using HealthCare.Models.PatientEntity;
 using HealthCare.Models.PatientEntity.Dto;
+using HealthCare.Models.Query;
 using HealthCare.Repositories.Interfaces;
 using HealthCare.Services.Interfaces;
 using HealthCare.Utils;
@@ -75,18 +76,26 @@ public class PatientService(
         await repositoryUow.CommitAsync();
     }
 
-    public async Task<PatientPageResult> Patients(int page, int pageSize)
+    public async Task<PatientPageResult> Patients(int pageNumber, int pageSize, string? search, Filter filter)
     {
         var user = await accessor.GetEmployee(jwtSetting, tokenService, managerUow);
         user = await managerUow.UserManager.FindByIdAsync(Convert.ToString(user.Id) ?? string.Empty) ??
                throw new BadHttpRequestException("User not found.");
 
-        var patients = await repositoryUow.PatientRepository.GetPatients(user.Id, page, pageSize);
+        var parameters = new Parameters
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            Search = search,
+            Filter = filter
+        };
+
+        var patients = await repositoryUow.PatientRepository.GetPatients(user.Id, parameters);
 
         return new()
         {
-            Patients = mapper.Map<List<PatientResponseDto>>(patients),
-            TotalCount = patients.Count
+            Patients = mapper.Map<List<PatientResponseDto>>(patients.Patients),
+            TotalCount = patients.TotalCount
         };
     }
 

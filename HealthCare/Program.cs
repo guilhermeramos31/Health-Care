@@ -1,10 +1,7 @@
 using HealthCare.Services;
 using HealthCare.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HealthCare.Models.Profiles;
-using HealthCare.Models.EmployeeEntity;
-using HealthCare.Models.RoleEntity;
 using HealthCare.Repositories;
 using HealthCare.Infrastructure.Configurations.Role;
 using HealthCare.Infrastructure.Configurations.Authentication;
@@ -17,8 +14,6 @@ using HealthCare.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", config =>
@@ -26,7 +21,8 @@ builder.Services.AddCors(options =>
         config.AllowAnyOrigin()
             .WithMethods()
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .WithExposedHeaders("x-total-count");
     });
 }).AddControllers().AddNewtonsoftJson();
 
